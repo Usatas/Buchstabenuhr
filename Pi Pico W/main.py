@@ -44,8 +44,8 @@ wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
 # Fill in your network name (ssid) and password here:
-ssid = ''
-password = ''
+ssid = config["wlan_ssid"]
+password =  config["wlan_password"]
 wlan.connect(ssid, password)
 
 
