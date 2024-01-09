@@ -5,11 +5,62 @@
 import json
 import network   # handles connecting to WiFi
 import urequests # handles making and servicing network requests
+
 class Buchstabenuhr():
     config ={}
     wlan_ssid =""
     wlan_password=""
     wlan_mode =""
+    # LED Addresses
+    # Reihe 1: 0 - 11
+    ES_1 = list(range(0,2))
+    C_1_1 = [2]
+    IST_1 = list(range(3,6))
+    C_1_2 = [6]
+    FUENF_1=list(range(7,11))
+    C_1_3 = [11]
+    # Reihe 2: 12 - 23
+    ZEHN_2 = list(range(12,16))
+    C_2_1 = [16]
+    ZWANZIG = list(range(17,24))
+    # Reihe 3: 24 - 35
+    C_3_1 = [24]
+    DREI_3 = list(range(25,29))
+    VIERTEL_3 = list(range(29,36))
+    # Reihe 4: 36 - 47
+    VOR_4 = list(range(36,39))
+    NACH_4 = list(range(39,43))
+    C_4_1 = [43]
+    HALB_4 = list(range(44,48))
+    # Reihe 5: 48 - 59
+    ELF_5 = list(range(48,51))
+    C_5_1 = [51]
+    ZEHN_5 = list(range(52,56))
+    EINS_5 = list(range(56,60))
+    # Reihe 6: 60 - 71
+    C_6_1 = [60]
+    NEUN_6 = list(range(61,65))
+    C_6_2 = [65]
+    SECHS_6 = list(range(66,71))
+    C_6_3 = [71]
+    # Reihe 7: 72 - 83
+    DREI_7 = list(range(72,76))
+    VIERTEL_7 = list(range(76,80))
+    ACHT_7 = list(range(80,84))
+    # Reihe 8: 84 - 95
+    SIEBEN_8 = list(range(84,90))
+    C_8_1 = [90]
+    ZWOELF_8 = list(range(91,96))
+    # Reihe 9: 96 - 107
+    ZWEI_9 = list(range(96,100))
+    FUENF_9 = list(range(100,104))
+    C_9_1 = [104]
+    UHR_9 = list(range(105,108))
+    # Reihe 10: 108 - 111
+    HERZ_MIN_10_1 = [108]
+    HERZ_MIN_10_2 = [109]
+    HERZ_MIN_10_3 = [110]
+    HERZ_MIN_10_4 = [111]
 
     def __init__(self):
         print("Init Buchstabenuhr")
@@ -83,7 +134,7 @@ class Buchstabenuhr():
             self.connect_to_wlan("Buchstabenuhr","Buchstabenuhr", "host")
 
 
-    def setup__wlan_config_web_server():
+    def setup__wlan_config_web_server(self):
         html = """<!DOCTYPE html>
     <html>
     <head><title>Wi-Fi Setup</title></head>
