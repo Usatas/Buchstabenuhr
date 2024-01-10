@@ -5,7 +5,7 @@
 import json
 import network   # handles connecting to WiFi
 import urequests # handles making and servicing network requests
-
+import time
 # LED Addresses
 # Reihe 1: 0 - 11
 ES_1 = list(range(0,2))
@@ -70,7 +70,6 @@ class Buchstabenuhr():
         print("Init Buchstabenuhr")
         self.load_config_from_file()
         self.apply_loaded_config()
-        self.initialize_wlan()
           
     def save_config(self, config):    
         print("save the config file to flash")
@@ -136,12 +135,39 @@ class Buchstabenuhr():
             print(f"Connecting sucessfull: {self.wlan.isconnected()==True}")
             print(self.wlan.ifconfig())
 
-    def initialize_wlan(self):
+    def run(self):
+        # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         self.connect_to_wlan(self.wlan_ssid, self.wlan_password, self.wlan_mode)
         if self.wlan.isconnected == False:
             print(f"Connecting to \"{self.wlan_ssid}\" faild - opening own access point \"Buchstabenuhr\"!")
             self.connect_to_wlan("Buchstabenuhr","Buchstabenuhr", "host")
+        # runtime as initial time ...
+        min = 00
+        hour = 00
+        error_leds = []
+        if self.wlan.isconnected:
+            time_json = self.request_current_time(self.time_zone)
+            temp_min = time_json.get("min",-1)
+            temp_hour = time_json.get("hour",-1)
+            # TODO Error if loading time failed => maybe set a C as indicator
+            
+            if temp_min <0 or temp_hour <0:
+                error_leds += C_1_1
+            else:
+                 # todo update RTC
+                 min = temp_min
+                 hour= temp_hour
+        elif self.wlan_ssid != "Buchstabenuhr":
+            # TODO Error WLAN is configured but unable to connect => set a C as indicator
+            error_leds+= C_1_2
 
+        # TODO load time from RTC
+        while True:
+            # Reload time every 12h
+            # TODO load time from RTC
+            on_leds = self.interpret_time_to_led(min, hour)
+            # TODO Show LEDs
+            time.sleep(10) # sleep for 10s => Time scale is min so... this is fine
 
     def setup__wlan_config_web_server(self):
         html = """<!DOCTYPE html>
@@ -160,11 +186,7 @@ class Buchstabenuhr():
     </html>
     """
     
-    def interpret_time_to_led(self, current_time):
-        if current_time is None:
-            return False
-        min = current_time.get("minute",-1)
-        hour = current_time.get("hour",-1)
+    def interpret_time_to_led(self, min, hour):
         if min <0 or hour <0:
             return False
         
@@ -290,7 +312,7 @@ class Buchstabenuhr():
     #r = urequests.get("https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin") # Server that returns the current GMT+0 time.
     #print(r.json())
 
-
+    
 def main():
     uhr = Buchstabenuhr()
 
