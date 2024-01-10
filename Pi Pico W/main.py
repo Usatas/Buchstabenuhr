@@ -171,9 +171,13 @@ class Buchstabenuhr():
         elif min < 20:
             # VIERTEL_3 NACH_4
             on_leds += VIERTEL_3 + NACH_4
-        alif min < 25:
+        elif min < 25:
             # ZWANZIG_2 NACH_4
             on_leds += ZWANZIG_2 + NACH_4
+        elif min <25:
+            # FUENF_1 VOR_5 HALB_4
+            hour +=1
+            on_leds += FUENF_1+ VOR_5+ HALB_4
             
     # Example 1. Make a GET request for google.com and print HTML
     # Print the html content from google.com
