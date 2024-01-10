@@ -174,11 +174,41 @@ class Buchstabenuhr():
         elif min < 25:
             # ZWANZIG_2 NACH_4
             on_leds += ZWANZIG_2 + NACH_4
-        elif min <25:
-            # FUENF_1 VOR_5 HALB_4
+        elif min <30:
+            # FUENF_1 VOR_4 HALB_4
             hour +=1
-            on_leds += FUENF_1+ VOR_5+ HALB_4
-            
+            on_leds += FUENF_1+ VOR_4+ HALB_4
+        elif min <35:
+            # HALB_4
+            hour +=1
+            on_leds += HALB_4
+        elif min <40:
+            # FUENF_1 NACH_4 HALB_4
+            hour +=1
+            on_leds += FUENF_1+ NACH_4+ HALB_4
+        elif min <45:
+            # ZWANZIG_2 VOR_4
+            hour +=1
+            on_leds += ZWANZIG_2 + VOR_4
+        elif min <50:
+            # VIERTEL_3 VOR_4
+            hour +=1
+            on_leds += VIERTEL_3 + VOR_4
+        elif min<55:
+            # ZEHN_2 VOR_4
+            hour +=1
+            on_leds += ZEHN_2 + VOR_4
+        elif min < 60:
+            # FUENF_1 VOR_4
+            on_leds += FUENF_1 + VOR_4
+        
+        # limitet to 1 - 12
+        if hour >24:
+            hour -=12
+        if hour >12:
+            hour -=12
+        # now a switch case on hour
+
     # Example 1. Make a GET request for google.com and print HTML
     # Print the html content from google.com
     #print("1. Querying google.com:")
