@@ -22,7 +22,7 @@ class Buchstabenuhr():
     # Reihe 2: 12 - 23
     ZEHN_2 = list(range(12,16))
     C_2_1 = [16]
-    ZWANZIG = list(range(17,24))
+    ZWANZIG_2 = list(range(17,24))
     # Reihe 3: 24 - 35
     C_3_1 = [24]
     DREI_3 = list(range(25,29))
@@ -150,7 +150,31 @@ class Buchstabenuhr():
     </body>
     </html>
     """
-
+    def interpret_time_to_led(self, current_time):
+        if current_time is None:
+            return False
+        min = current_time.get("minute",-1)
+        hour = current_time.get("hour",-1)
+        if min <0 || hour <0:
+            return False
+        
+        hearts = min %5
+        on_leds = []
+        # ES_1 IST_1
+        on_leds += ES_1 + IST_1
+        if min <10:
+            # FUENF_1 NACH_4
+            on_leds += FUENF_1 + NACH_4
+        elif min <15:
+            # ZEHN_2 NACH_4
+            on_leds += ZEHN_2 + NACH_4
+        elif min < 20:
+            # VIERTEL_3 NACH_4
+            on_leds += VIERTEL_3 + NACH_4
+        alif min < 25:
+            # ZWANZIG_2 NACH_4
+            on_leds += ZWANZIG_2 + NACH_4
+            
     # Example 1. Make a GET request for google.com and print HTML
     # Print the html content from google.com
     #print("1. Querying google.com:")
