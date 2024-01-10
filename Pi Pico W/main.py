@@ -6,61 +6,65 @@ import json
 import network   # handles connecting to WiFi
 import urequests # handles making and servicing network requests
 
+# LED Addresses
+# Reihe 1: 0 - 11
+ES_1 = list(range(0,2))
+C_1_1 = [2]
+IST_1 = list(range(3,6))
+C_1_2 = [6]
+FUENF_1=list(range(7,11))
+C_1_3 = [11]
+# Reihe 2: 12 - 23
+ZEHN_2 = list(range(12,16))
+C_2_1 = [16]
+ZWANZIG_2 = list(range(17,24))
+# Reihe 3: 24 - 35
+C_3_1 = [24]
+DREI_3 = list(range(25,29))
+VIER_3 = list(range(29,33))
+TEL_3 = list(range(33,36))
+# Reihe 4: 36 - 47
+VOR_4 = list(range(36,39))
+NACH_4 = list(range(39,43))
+C_4_1 = [43]
+HALB_4 = list(range(44,48))
+# Reihe 5: 48 - 59
+ELF_5 = list(range(48,51))
+C_5_1 = [51]
+ZEHN_5 = list(range(52,56))
+EIN_5 = list(range(56,59))
+S_5 = [59]
+# Reihe 6: 60 - 71
+C_6_1 = [60]
+NEUN_6 = list(range(61,65))
+C_6_2 = [65]
+SECHS_6 = list(range(66,71))
+C_6_3 = [71]
+# Reihe 7: 72 - 83
+DREI_7 = list(range(72,76))
+VIER_7 = list(range(76,80))
+ACHT_7 = list(range(80,84))
+# Reihe 8: 84 - 95
+SIEBEN_8 = list(range(84,90))
+C_8_1 = [90]
+ZWOELF_8 = list(range(91,96))
+# Reihe 9: 96 - 107
+ZWEI_9 = list(range(96,100))
+FUENF_9 = list(range(100,104))
+C_9_1 = [104]
+UHR_9 = list(range(105,108))
+# Reihe 10: 108 - 111
+HERZ_MIN_10_1 = [108]
+HERZ_MIN_10_2 = [109]
+HERZ_MIN_10_3 = [110]
+HERZ_MIN_10_4 = [111]
+
 class Buchstabenuhr():
     config ={}
     wlan_ssid =""
     wlan_password=""
     wlan_mode =""
-    # LED Addresses
-    # Reihe 1: 0 - 11
-    ES_1 = list(range(0,2))
-    C_1_1 = [2]
-    IST_1 = list(range(3,6))
-    C_1_2 = [6]
-    FUENF_1=list(range(7,11))
-    C_1_3 = [11]
-    # Reihe 2: 12 - 23
-    ZEHN_2 = list(range(12,16))
-    C_2_1 = [16]
-    ZWANZIG_2 = list(range(17,24))
-    # Reihe 3: 24 - 35
-    C_3_1 = [24]
-    DREI_3 = list(range(25,29))
-    VIERTEL_3 = list(range(29,36))
-    # Reihe 4: 36 - 47
-    VOR_4 = list(range(36,39))
-    NACH_4 = list(range(39,43))
-    C_4_1 = [43]
-    HALB_4 = list(range(44,48))
-    # Reihe 5: 48 - 59
-    ELF_5 = list(range(48,51))
-    C_5_1 = [51]
-    ZEHN_5 = list(range(52,56))
-    EINS_5 = list(range(56,60))
-    # Reihe 6: 60 - 71
-    C_6_1 = [60]
-    NEUN_6 = list(range(61,65))
-    C_6_2 = [65]
-    SECHS_6 = list(range(66,71))
-    C_6_3 = [71]
-    # Reihe 7: 72 - 83
-    DREI_7 = list(range(72,76))
-    VIERTEL_7 = list(range(76,80))
-    ACHT_7 = list(range(80,84))
-    # Reihe 8: 84 - 95
-    SIEBEN_8 = list(range(84,90))
-    C_8_1 = [90]
-    ZWOELF_8 = list(range(91,96))
-    # Reihe 9: 96 - 107
-    ZWEI_9 = list(range(96,100))
-    FUENF_9 = list(range(100,104))
-    C_9_1 = [104]
-    UHR_9 = list(range(105,108))
-    # Reihe 10: 108 - 111
-    HERZ_MIN_10_1 = [108]
-    HERZ_MIN_10_2 = [109]
-    HERZ_MIN_10_3 = [110]
-    HERZ_MIN_10_4 = [111]
+
 
     def __init__(self):
         print("Init Buchstabenuhr")
@@ -155,11 +159,12 @@ class Buchstabenuhr():
             return False
         min = current_time.get("minute",-1)
         hour = current_time.get("hour",-1)
-        if min <0 || hour <0:
+        if min <0 or hour <0:
             return False
         
         hearts = min %5
         on_leds = []
+        
         # ES_1 IST_1
         on_leds += ES_1 + IST_1
         if min <10:
@@ -169,8 +174,8 @@ class Buchstabenuhr():
             # ZEHN_2 NACH_4
             on_leds += ZEHN_2 + NACH_4
         elif min < 20:
-            # VIERTEL_3 NACH_4
-            on_leds += VIERTEL_3 + NACH_4
+            # VIER_3 TEL_3 NACH_4
+            on_leds += VIER_3 +TEL_3 + NACH_4
         elif min < 25:
             # ZWANZIG_2 NACH_4
             on_leds += ZWANZIG_2 + NACH_4
@@ -191,9 +196,9 @@ class Buchstabenuhr():
             hour +=1
             on_leds += ZWANZIG_2 + VOR_4
         elif min <50:
-            # VIERTEL_3 VOR_4
+            # VIER_3 TEL_3 VOR_4
             hour +=1
-            on_leds += VIERTEL_3 + VOR_4
+            on_leds += VIER_3 +TEL_3 + VOR_4
         elif min<55:
             # ZEHN_2 VOR_4
             hour +=1
@@ -208,6 +213,56 @@ class Buchstabenuhr():
         if hour >12:
             hour -=12
         # now a switch case on hour
+        if hour == 1:
+                # EIN_5
+                on_leds += EIN_5
+                if min >=5:
+                    # EINS_5 S_5
+                    on_leds += S_5 
+        elif hour == 2:
+                # ZWEI_9
+                on_leds +=ZWEI_9
+        elif hour == 3:
+                # DREI_7
+                on_leds += DREI_7
+        elif hour == 4:
+                # VIER_7
+                on_leds += VIER_7
+        elif hour == 5:
+                # FUENF_9
+                on_leds += FUENF_9
+        elif hour ==  6:
+                # SECHS_6
+                on_leds += SECHS_6
+        elif hour ==  7:
+                # SIEBEN_8
+                on_leds += SIEBEN_8
+        elif hour ==  8:
+                # ACHT_7
+                on_leds += ACHT_7
+        elif hour ==  9:
+                # NEUN_6
+                on_leds += NEUN_6
+        elif hour ==  10:
+                # ZEHN_5
+                on_leds += ZEHN_5
+        elif hour ==  11:
+                # ELF_5
+                on_leds += ELF_5
+        else:
+                # ZWOELF_8
+                on_leds += ZWOELF_8
+
+        if hearts >=1:
+             on_leds +=HERZ_MIN_10_1
+        if hearts >=2:
+             on_leds +=HERZ_MIN_10_2
+        if hearts >=3:
+             on_leds +=HERZ_MIN_10_3
+        if hearts >=4:
+             on_leds +=HERZ_MIN_10_4
+        
+        return on_leds
 
     # Example 1. Make a GET request for google.com and print HTML
     # Print the html content from google.com
