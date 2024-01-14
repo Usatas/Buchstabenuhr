@@ -23,13 +23,12 @@ class NetworkHandler():
 
 
     def connect_to_wlan(self,ssid="", password="",mode=""):
-        print(f"connect_to_wlan: ssid: \"{ssid}\", password: \"{password}\", mode: \"{mode}\"")
+        print(f"connect_to_wlan: ssid: \"{ssid}\", mode: \"{mode}\"")
         if ssid == "" or mode == "":
-            
-            print(f"connect_to_wlan with loaded config: ssid: \"{ssid}\", password: \"{password}\", mode: \"{mode}\"")
             ssid = self.wlan_ssid
             password = self.wlan_password
             mode = self.wlan_mode
+            print(f"connect_to_wlan with loaded config: ssid: \"{ssid}\",  mode: \"{mode}\"")
 
         self.wlan_ssid = ssid
         self.wlan_password = password
@@ -51,7 +50,7 @@ class NetworkHandler():
                 pass
             # Fill in your network name (ssid) and password here:
             self.wlan.connect(ssid, password)
-            print(f"Connecting sucessfull: {self.wlan.isconnected()==True}")
+            print(f"Connecting sucessfull: {self.wlan.isconnected()}")
             print(self.wlan.ifconfig())
 
         return self.wlan.isconnected()
@@ -59,16 +58,22 @@ class NetworkHandler():
 
     
     def request_available_time_zones(self):
-         r = urequests.get(f"https://www.timeapi.io/api/TimeZone/AvailableTimeZones")
-         return r.json()
+        try:
+            print("request_available_time_zones")
+            r = urequests.get(f"https://www.timeapi.io/api/TimeZone/AvailableTimeZones")
+            return r.json()
+        except:
+            print("Exception while requesting available time zones")
+            return None     
          
     def request_current_time(self,time_zone):
-        if self.wlan.isconnected == False:
-            print("No network connection - unable to request time")
-            return {"hour":-1,"min":-1}
-        
-        r = urequests.get(f"https://www.timeapi.io/api/Time/current/zone?timeZone={time_zone}")
-        return r.json()
+        try:
+            print(f"request_current_time: time_zone: \"{time_zone}\"")
+            r = urequests.get(f"https://www.timeapi.io/api/Time/current/zone?timeZone={time_zone}")
+            return r.json()
+        except:
+            print("Exception while requesting current time")
+            return None
     # Example 2. urequests can also handle basic json support! Let's get the current time from a server
     #print("\n\n2. Querying the current GMT+0 time:")
     #r = urequests.get("https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin") # Server that returns the current GMT+0 time.
