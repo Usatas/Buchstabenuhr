@@ -1,5 +1,3 @@
-import network   # handles connecting to WiFi
-import urequests # handles making and servicing network requests
 import time
 
 # LED Addresses
@@ -83,7 +81,7 @@ class Buchstabenuhr():
     def apply_loaded_config(self):
         self.time_zone = self.config.get("time_zone","Europe/Berlin")
         self.available_time_zones = self.config.get("available_time_zones",["Europe/Berlin"])
-        self.config_handler.save_config(self.config) # save the loaded config just in case there are some new keys with default values
+        # self.config_handler.save_config(self.config) # save the loaded config just in case there are some new keys with default values
 
     def set_config_to_default(self):
         print("set config to default")
@@ -93,9 +91,10 @@ class Buchstabenuhr():
         
     def show_start_up_animation(self):
          print("show_start_up_animation")
-            # TODO show start up animation
+        # TODO show start up animation
 
     def run(self):
+        print()
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         is_connected = self.network_handler.connect_to_wlan()
         if is_connected == False:
@@ -115,6 +114,7 @@ class Buchstabenuhr():
             error_leds += C_1_1
         else:
             # todo update RTC
+            
             min = temp_min
             hour= temp_hour
             
@@ -272,10 +272,4 @@ class Buchstabenuhr():
     #r = urequests.get("http://www.google.com")
     #print(r.content)
     #r.close()
-    def calibrate_rtc(self):
-        print("calibrate_rtc")
-        current_time = self.network_handler.request_current_time(self.time_zone)
-        print(current_time)
-        # TODO set RTC to current time
-
-
+   
