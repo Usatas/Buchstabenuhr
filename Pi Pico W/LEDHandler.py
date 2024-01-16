@@ -66,5 +66,22 @@ class LEDHandler():
             else:
                 self.pixels_set(i, background_color)
 
+    def pixels_fill_and_show_expert_mode(self, on_leds, foreground_color, background_color, foreground_brightness, background_brightness):    
+        dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])    
+        for i in range(len(self.theLEDs)):
+            if i in on_leds:
+                r = int(((foreground_color >> 8) & 0xFF) * foreground_brightness)
+                g = int(((foreground_color >> 16) & 0xFF) * foreground_brightness)
+                b = int((foreground_color & 0xFF) * foreground_brightness)
+                dimmer_ar[i] = (g<<16) + (r<<8) + b
+            else:
+                r = int(((background_color >> 8) & 0xFF) * background_brightness)
+                g = int(((background_color >> 16) & 0xFF) * background_brightness)
+                b = int((background_color & 0xFF) * background_brightness)
+                dimmer_ar[i] = (g<<16) + (r<<8) + b
+            
+        self.sm.put(dimmer_ar, 8)
+        time.sleep_ms(10)
+
     def pixels_fill(self,on_leds):
         self.pixels_fill_custom(on_leds, self.foreground_color,self.background_color)
