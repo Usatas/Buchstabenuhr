@@ -9,6 +9,7 @@ from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
 from Buchstabenuhr import Buchstabenuhr
 from LEDHandler import LEDHandler
+import time
 
 LEDPIN = 25
 AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
@@ -19,7 +20,6 @@ WLAN_DEFAUT = {
     "wlan_mode": "host"
 }
 
-import time
 
 
 def main():
@@ -38,32 +38,33 @@ def main():
         print(f"Connected to WLAN: {is_connected}")
     # TODO Initialize RCT
     rtc_handler = RTCHandler()
-    led_handler = LEDHandler(LEDPIN, AMOUNT_LEDS)
+    led_handler = LEDHandler(config_handler)
     # TODO pass config, network and rtc to Buchstabenuhr
     uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler, led_handler)
     # TODO run Buchstabenuhr
     try:
         print("Start main try")
 
-        print(network_handler.wlan.isconnected())
+        print(f"Connected to WLAN: {network_handler.wlan.isconnected()}")
+        network_handler.setup_web_server()
         if network_handler.wlan.isconnected():
             print("Connected to WLAN - load time from network")
             network_time = network_handler.request_current_time("Europe/Berlin")
-            print(f"network_time: {network_time}")
+            print (f"network_time: {network_time}")
             if network_time is not None:
                 print("Calibrate RTC")
                 rtc_handler.calibrate_rtc(network_time)
             else:
                 print("No network time available")
+        else:
+            print("No network available - run offline")
 
-            for i in range(30):
-                time2 = rtc_handler.DS3231_ReadTime(0)
-                print(time2)
-                time.sleep(1)
-            # uhr.run()
-    except:
-        print("Exception while running Buchstabenuhr")
+        uhr.run()
+
+    except Exception as e:
+        print(f"Exception while running Buchstabenuhr: {e}")
         # TODO Add handle of exceptions .. maybe blinking for 10s and restart 
+
 
     finally:
         network_handler.wlan.disconnect()
@@ -74,16 +75,7 @@ def main():
         print("End main try")
 
 
-def test2():
-    print("Test Main")
-    rtc2 = RTCHandler()
-    time2 = rtc2.DS3231_ReadTime(0)
-    print(time2)
-    for i in range(10):
-        time2 = rtc2.DS3231_ReadTime(0)
-        print(time2)
-        time.sleep(10)
-
 
 if __name__ == "__main__":
     main()
+    print("end")
