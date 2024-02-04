@@ -39,6 +39,7 @@ def main():
     # TODO Initialize RCT
     rtc_handler = RTCHandler()
     led_handler = LEDHandler(config_handler)
+    #led_handler.pixels_fill_and_show_test()
     # TODO pass config, network and rtc to Buchstabenuhr
     uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler, led_handler)
     # TODO run Buchstabenuhr
@@ -73,8 +74,6 @@ def main():
         print(network_handler.wlan.isconnected())
         print(network_handler.wlan.ifconfig())
         print("End main try")
-
-
 
 if __name__ == "__main__":
     main()
