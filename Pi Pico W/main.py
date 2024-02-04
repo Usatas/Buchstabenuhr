@@ -11,7 +11,7 @@ from Buchstabenuhr import Buchstabenuhr
 from LEDHandler import LEDHandler
 
 LEDPIN = 25
-AMOUNT_LEDS = 112*3 # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
+AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
 
 WLAN_DEFAUT = {
     "wlan_ssid": "Buchstabenuhr",
@@ -20,6 +20,8 @@ WLAN_DEFAUT = {
 }
 
 import time
+
+
 def main():
     print("main")
     # TODO Load config from file
@@ -32,33 +34,33 @@ def main():
     if not is_connected:
         print("Not connected to WLAN - wait 10s and try again")
         time.sleep(10)
-        is_connected =network_handler.connect_to_wlan()
+        is_connected = network_handler.connect_to_wlan()
         print(f"Connected to WLAN: {is_connected}")
     # TODO Initialize RCT
     rtc_handler = RTCHandler()
     led_handler = LEDHandler(LEDPIN, AMOUNT_LEDS)
     # TODO pass config, network and rtc to Buchstabenuhr
-    uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler,led_handler)
+    uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler, led_handler)
     # TODO run Buchstabenuhr
     try:
-       print("Start main try")
+        print("Start main try")
 
-       print(network_handler.wlan.isconnected())
-       if network_handler.wlan.isconnected():
-        print("Connected to WLAN - load time from network")
-        network_time = network_handler.request_current_time("Europe/Berlin")
-        print (f"network_time: {network_time}")
-        if network_time is not None:
-            print("Calibrate RTC")
-            rtc_handler.calibrate_rtc(network_time)
-        else:
-            print("No network time available")
+        print(network_handler.wlan.isconnected())
+        if network_handler.wlan.isconnected():
+            print("Connected to WLAN - load time from network")
+            network_time = network_handler.request_current_time("Europe/Berlin")
+            print(f"network_time: {network_time}")
+            if network_time is not None:
+                print("Calibrate RTC")
+                rtc_handler.calibrate_rtc(network_time)
+            else:
+                print("No network time available")
 
-        for i in range(30):
-            time2 = rtc_handler.DS3231_ReadTime(0)
-            print(time2)
-            time.sleep(1)
-        # uhr.run()
+            for i in range(30):
+                time2 = rtc_handler.DS3231_ReadTime(0)
+                print(time2)
+                time.sleep(1)
+            # uhr.run()
     except:
         print("Exception while running Buchstabenuhr")
         # TODO Add handle of exceptions .. maybe blinking for 10s and restart 
@@ -81,6 +83,7 @@ def test2():
         time2 = rtc2.DS3231_ReadTime(0)
         print(time2)
         time.sleep(10)
+
 
 if __name__ == "__main__":
     main()
