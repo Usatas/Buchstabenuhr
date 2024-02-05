@@ -10,6 +10,7 @@ from RTCHandler import RTCHandler
 from Buchstabenuhr import Buchstabenuhr
 from LEDHandler import LEDHandler
 import time
+import uasyncio as asyncio 
 
 LEDPIN = 25
 AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
@@ -19,8 +20,6 @@ WLAN_DEFAUT = {
     "wlan_password": "Buchstabenuhr",
     "wlan_mode": "host"
 }
-
-
 
 def main():
     print("main")
@@ -47,8 +46,8 @@ def main():
         print("Start main try")
 
         print(f"Connected to WLAN: {network_handler.wlan.isconnected()}")
-        network_handler.setup_web_server()
-        if network_handler.wlan.isconnected():
+
+        """if network_handler.wlan.isconnected():
             print("Connected to WLAN - load time from network")
             network_time = network_handler.request_current_time("Europe/Berlin")
             print (f"network_time: {network_time}")
@@ -58,9 +57,12 @@ def main():
             else:
                 print("No network time available")
         else:
-            print("No network available - run offline")
-
-        uhr.run()
+            print("No network available - run offline")"""
+        loop = asyncio.get_event_loop()
+        # loop.create_task(uhr.run())
+        # loop.create_task(network_handler.startWebServer())
+        loop.run_until_complete(asyncio.gather(network_handler.startWebServer(), uhr.run()))
+        # loop.run_forever()
 
     except Exception as e:
         print(f"Exception while running Buchstabenuhr: {e}")

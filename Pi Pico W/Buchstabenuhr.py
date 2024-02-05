@@ -1,4 +1,5 @@
 import time
+import uasyncio as asyncio
 
 # 0,1, 2,3, X, 5,6
 #
@@ -378,8 +379,7 @@ class Buchstabenuhr():
 
     # TODO show start up animation
 
-    def run(self):
-        print("run Buchstabenuhr")
+    async def run(self):
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
         min = 00
@@ -388,6 +388,7 @@ class Buchstabenuhr():
 
         just_updated = True  # to prevent reloading time every 10s
         while True:
+            print("Buchstabenuhr running")
             # Reload time every 12h
             if min == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
@@ -410,26 +411,8 @@ class Buchstabenuhr():
             (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
             on_leds = self.interpret_time_to_led(minute, hour)
             # TODO Show LEDs
-            self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN,
-                                                              0.8, 0.1)
-            time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
-
-    def setup__wlan_config_web_server(self):
-        html = """<!DOCTYPE html>
-    <html>
-    <head><title>Wi-Fi Setup</title></head>
-    <body>
-    <h1>Wi-Fi Setup</h1>
-    <form action="/save" method="post">
-        <label for="ssid">Wi-Fi SSID:</label>
-        <input type="text" id="ssid" name="ssid" required><br>
-        <label for="password">Wi-Fi Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Save and Connect">
-    </form>
-    </body>
-    </html>
-    """
+            self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 0.8, 0.1)
+            await asyncio.sleep(1)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
         if min < 0 or hour < 0:
@@ -536,10 +519,3 @@ class Buchstabenuhr():
             on_leds += HERZ_MIN_10_4
 
         return on_leds
-
-    # Example 1. Make a GET request for google.com and print HTML
-    # Print the html content from google.com
-    # print("1. Querying google.com:")
-    # r = urequests.get("http://www.google.com")
-    # print(r.content)
-    # r.close()
