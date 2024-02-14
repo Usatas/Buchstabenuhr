@@ -37,6 +37,10 @@ class LEDHandler():
             config = self.config_handler.config
         print("LEDHandler apply_loaded_config")
         self.brightness = self.config.get("brightness",100) # TODO Hier prüfen ob die Keys vorhanden sind
+        self.foreground_color= self.config.get("foreground_color",self.WHITE)
+        self.background_color= self.config.get("background_color",self.WHITE)
+        self.foreground_brightness= self.config.get("foreground_brightness",0.8)
+        self.background_brightness= self.config.get("background_brightness",0.01)
         
     def set_max_brightness(self, max_brigthness):
         self.max_brigthness = max_brigthness
@@ -59,6 +63,10 @@ class LEDHandler():
                 self.pixels_set(i, background_color)
 
     # prefered method
+    def pixels_fill_and_show(self, on_leds):
+        self.pixels_fill_and_show_expert_mode(on_leds, self.foreground_color, self.background_color, self.foreground_brightness, self.background_brightness)
+
+
     def pixels_fill_and_show_expert_mode(self, on_leds, foreground_color, background_color, foreground_brightness, background_brightness):
         """
         Fills the specified LEDs with the given colors and brightness levels, and shows the updated LED display.
@@ -71,27 +79,15 @@ class LEDHandler():
             background_brightness (float): The brightness level of the background LEDs (0.0 to 1.0).
         """
         # dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])
+        print("pixels_fill_and_show_expert_mode")
         for i in range(self.NUM_LEDS):
             if i in on_leds:
-                # r = int(((foreground_color[0] >> 8) & 0xFF) * foreground_brightness)
-                # g = int(((foreground_color[1] >> 16) & 0xFF) * foreground_brightness)
-                # b = int((foreground_color[2] & 0xFF) * foreground_brightness)
-
-                # self.leds[i] = (g << 16) + (r << 8) + b
-                self.leds[i] = foreground_color# * foreground_brightness
+                self.leds[i] = tuple(int(i * foreground_brightness) for i in foreground_color)
             else:
                 if i in self.DISABLED:
-                    # r = int(((0 >> 8) & 0xFF) * 0)
-                    # g = int(((0 >> 16) & 0xFF) * 0)
-                    # b = int((0 & 0xFF) * 0)
-                    # self.leds[i] = (g << 16) + (r << 8) + b
                     self.leds[i] = (0,0,0)
                 else:
-                    # r = int(((background_color[0] >> 8) & 0xFF) * background_brightness)
-                    # g = int(((background_color[1] >> 16) & 0xFF) * background_brightness)
-                    # b = int((background_color[2] & 0xFF) * background_brightness)
-                    # self.leds[i] = (g << 16) + (r << 8) + b
-                    self.leds[i] = background_color# * background_brightness
+                    self.leds[i] = tuple(int(i * background_brightness) for i in background_color)
 
         self.leds.write()
         time.sleep_ms(10)

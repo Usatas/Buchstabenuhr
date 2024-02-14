@@ -27,7 +27,7 @@ def main():
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
     led_handler = LEDHandler(config_handler)
-    #led_handler.ledtest()
+    led_handler.ledtest()
     # TODO Connect to network
     network_handler = NetworkHandler(config_handler)
     is_connected = network_handler.connect_to_wlan()
@@ -47,7 +47,7 @@ def main():
         print("Start main try")
 
         print(f"Connected to WLAN: {network_handler.wlan.isconnected()}")
-        """if network_handler.wlan.isconnected():
+        if network_handler.wlan.isconnected():
             print("Connected to WLAN - load time from network")
             network_time = network_handler.request_current_time("Europe/Berlin")
             print (f"network_time: {network_time}")
@@ -57,7 +57,7 @@ def main():
             else:
                 print("No network time available")
         else:
-            print("No network available - run offline")"""
+            print("No network available - run offline")
         loop = asyncio.get_event_loop()
         loop.create_task(uhr.run())
         # loop.create_task(network_handler.startWebServer())

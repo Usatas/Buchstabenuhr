@@ -164,10 +164,10 @@ UHR_10 = U_10_9 + H_10_10 + R_10_11
 
 
 # Minuten LEDs 220 - 223
-MINUTE_1 = [220]
-MINUTE_2 = [221] 
-MINUTE_3 = [222]
-MINUTE_4 = [223]
+MINUTE_1 = [223]
+MINUTE_2 = [222] 
+MINUTE_3 = [221]
+MINUTE_4 = [220]
 
 NUM_LEDS = 224
 MAX_BRIGHTNESS = 255/2 # 50% brightness
@@ -383,13 +383,12 @@ class BuchstabenuhrSquare():
     # TODO show start up animation
 
     def run(self):
-        print("run Buchstabenuhr")
+        print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
         min = 00
         hour = 00
         error_leds = []
-
         just_updated = True  # to prevent reloading time every 10s
         while True:
             # Reload time every 12h
@@ -410,15 +409,15 @@ class BuchstabenuhrSquare():
             if min == 5 and just_updated:
                 just_updated = False
 
-            # TODO load time from RTC
+            # Get time from RTC
             (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
             print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
-            # TODO Show LEDs
+            # Show LEDs
             print("show LEDs")
             print(on_leds)
-            self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN,
-                                                              1, 0.1)
+            # self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 1, 0.1)
+            self.led_handler.pixels_fill_and_show(on_leds)
             time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
 
     def setup__wlan_config_web_server(self):
@@ -439,6 +438,7 @@ class BuchstabenuhrSquare():
     """
 
     def interpret_time_to_led(self, min, hour):
+        print(f"interpret_time_to_led: {hour}:{min}")
         if min < 0 or hour < 0:
             return False
 

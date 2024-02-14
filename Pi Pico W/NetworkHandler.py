@@ -88,7 +88,7 @@ class NetworkHandler():
     def request_current_time(self, time_zone):
         try:
             print(f"request_current_time: time_zone: \"{time_zone}\"")
-            r = urequests.get(f"https://www.timeapi.io/api/Time/current/zone?timeZone={time_zone}")
+            r = urequests.get(f"https://www.timeapi.io/api/Time/current/zone?timeZone={time_zone}")  # https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin
             return r.json()
         except:
             print("Exception while requesting current time")
