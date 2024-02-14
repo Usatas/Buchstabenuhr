@@ -7,7 +7,7 @@
 from ConfigHandler import ConfigHandler
 from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
-from Buchstabenuhr import Buchstabenuhr
+from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
 import time
 import uasyncio as asyncio 
@@ -26,6 +26,8 @@ def main():
     # TODO Load config from file
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
+    led_handler = LEDHandler(config_handler)
+    #led_handler.ledtest()
     # TODO Connect to network
     network_handler = NetworkHandler(config_handler)
     is_connected = network_handler.connect_to_wlan()
@@ -37,16 +39,14 @@ def main():
         print(f"Connected to WLAN: {is_connected}")
     # TODO Initialize RCT
     rtc_handler = RTCHandler()
-    led_handler = LEDHandler(config_handler)
     #led_handler.pixels_fill_and_show_test()
     # TODO pass config, network and rtc to Buchstabenuhr
-    uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler, led_handler)
+    uhr = BuchstabenuhrSquare(config_handler, network_handler, rtc_handler, led_handler)
     # TODO run Buchstabenuhr
     try:
         print("Start main try")
 
         print(f"Connected to WLAN: {network_handler.wlan.isconnected()}")
-
         """if network_handler.wlan.isconnected():
             print("Connected to WLAN - load time from network")
             network_time = network_handler.request_current_time("Europe/Berlin")
@@ -59,9 +59,10 @@ def main():
         else:
             print("No network available - run offline")"""
         loop = asyncio.get_event_loop()
-        # loop.create_task(uhr.run())
+        loop.create_task(uhr.run())
         # loop.create_task(network_handler.startWebServer())
-        loop.run_until_complete(asyncio.gather(network_handler.startWebServer(), uhr.run()))
+        # loop.run_until_complete(asyncio.gather(network_handler.startWebServer(), uhr.run()))
+        loop.run_until_complete(asyncio.gather(uhr.run()))
         # loop.run_forever()
 
     except Exception as e:

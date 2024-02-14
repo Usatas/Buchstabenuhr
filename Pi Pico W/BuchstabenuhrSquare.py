@@ -1,15 +1,5 @@
 import time
 
-# 0,1, 2,3, X, 5,6
-#
-#
-#
-#
-#
-#
-#
-#
-
 # LED Addresses
 # Reihe 1: 0 - 21 (links nach rechts)
 E_1_1 = [0, 1]  
@@ -368,6 +358,7 @@ class BuchstabenuhrSquare():
         self.led_handler = led_handler
         self.led_handler.set_max_brightness(MAX_BRIGHTNESS)
         self.led_handler.set_num_leds(NUM_LEDS)
+        self.led_handler.set_leds_disabled([])
 
         self.config_handler.initialize_default_config(
             self.default_config)  # TODO think about a better solution to prevent inconsistent default configs (maybe a class that holds the default config and the config handler just uses that)
@@ -421,10 +412,13 @@ class BuchstabenuhrSquare():
 
             # TODO load time from RTC
             (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
             # TODO Show LEDs
+            print("show LEDs")
+            print(on_leds)
             self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN,
-                                                              0.8, 0.1)
+                                                              1, 0.1)
             time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
 
     def setup__wlan_config_web_server(self):

@@ -38,14 +38,18 @@ class LEDHandler():
         print("LEDHandler apply_loaded_config")
         self.brightness = self.config.get("brightness",100) # TODO Hier prüfen ob die Keys vorhanden sind
         
-
-    def set_leds(self, value):
-        if len(value) == 0:
-            return
+    def set_max_brightness(self, max_brigthness):
+        self.max_brigthness = max_brigthness
+    
+    def set_num_leds(self, num_leds):
+        self.NUM_LEDS = num_leds
+        self.leds = neopixel.NeoPixel(self.neo_di, self.NUM_LEDS)
+    
+    def set_leds_disabled(self, leds_disabled):
+        self.DISABLED = leds_disabled
 
     def pixels_set(self, i, color):
         self.leds[i] = (color[1] << 16) + (color[0] << 8) + color[2]
-
 
     def pixels_fill_custom(self, on_leds, foreground_color, background_color):
         for i in range(len(self.theLEDs)):
@@ -66,24 +70,28 @@ class LEDHandler():
             foreground_brightness (float): The brightness level of the foreground LEDs (0.0 to 1.0).
             background_brightness (float): The brightness level of the background LEDs (0.0 to 1.0).
         """
-        dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])
-        for i in range(len(self.theLEDs)):
+        # dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])
+        for i in range(self.NUM_LEDS):
             if i in on_leds:
-                r = int(((foreground_color >> 8) & 0xFF) * foreground_brightness)
-                g = int(((foreground_color >> 16) & 0xFF) * foreground_brightness)
-                b = int((foreground_color & 0xFF) * foreground_brightness)
-                dimmer_ar[i] = (g << 16) + (r << 8) + b
+                # r = int(((foreground_color[0] >> 8) & 0xFF) * foreground_brightness)
+                # g = int(((foreground_color[1] >> 16) & 0xFF) * foreground_brightness)
+                # b = int((foreground_color[2] & 0xFF) * foreground_brightness)
+
+                # self.leds[i] = (g << 16) + (r << 8) + b
+                self.leds[i] = foreground_color# * foreground_brightness
             else:
                 if i in self.DISABLED:
-                    r = int((((0, 0, 0) >> 8) & 0xFF) * 0)
-                    g = int((((0, 0, 0) >> 16) & 0xFF) * 0)
-                    b = int(((0, 0, 0) & 0xFF) * 0)
-                    dimmer_ar[i] = (g << 16) + (r << 8) + b
+                    # r = int(((0 >> 8) & 0xFF) * 0)
+                    # g = int(((0 >> 16) & 0xFF) * 0)
+                    # b = int((0 & 0xFF) * 0)
+                    # self.leds[i] = (g << 16) + (r << 8) + b
+                    self.leds[i] = (0,0,0)
                 else:
-                    r = int(((background_color >> 8) & 0xFF) * background_brightness)
-                    g = int(((background_color >> 16) & 0xFF) * background_brightness)
-                    b = int((background_color & 0xFF) * background_brightness)
-                    dimmer_ar[i] = (g << 16) + (r << 8) + b
+                    # r = int(((background_color[0] >> 8) & 0xFF) * background_brightness)
+                    # g = int(((background_color[1] >> 16) & 0xFF) * background_brightness)
+                    # b = int((background_color[2] & 0xFF) * background_brightness)
+                    # self.leds[i] = (g << 16) + (r << 8) + b
+                    self.leds[i] = background_color# * background_brightness
 
         self.leds.write()
         time.sleep_ms(10)
@@ -113,7 +121,7 @@ class LEDHandler():
             self.leds.write()
             time.sleep_ms(1000)
 
-    def ledtest():
+    def ledtest(self):
         """
         Test function for controlling an LED strip.
 
