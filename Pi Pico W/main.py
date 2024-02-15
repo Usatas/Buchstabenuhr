@@ -7,11 +7,14 @@
 from ConfigHandler import ConfigHandler
 from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
-from Buchstabenuhr import Buchstabenuhr
+from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
+import time
+import uasyncio as asyncio 
+import machine
 
 LEDPIN = 25
-AMOUNT_LEDS = 112*3 # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
+AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
 
 WLAN_DEFAUT = {
     "wlan_ssid": "Buchstabenuhr",
@@ -19,12 +22,13 @@ WLAN_DEFAUT = {
     "wlan_mode": "host"
 }
 
-import time
 def main():
     print("main")
     # TODO Load config from file
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
+    led_handler = LEDHandler(config_handler)
+    led_handler.set_state(led_handler.STATE_WARNING)
     # TODO Connect to network
     network_handler = NetworkHandler(config_handler)
     is_connected = network_handler.connect_to_wlan()
@@ -32,55 +36,52 @@ def main():
     if not is_connected:
         print("Not connected to WLAN - wait 10s and try again")
         time.sleep(10)
-        is_connected =network_handler.connect_to_wlan()
+        is_connected = network_handler.connect_to_wlan()
         print(f"Connected to WLAN: {is_connected}")
     # TODO Initialize RCT
     rtc_handler = RTCHandler()
-    led_handler = LEDHandler(LEDPIN, AMOUNT_LEDS)
+    #led_handler.pixels_fill_and_show_test()
     # TODO pass config, network and rtc to Buchstabenuhr
-    uhr = Buchstabenuhr(config_handler, network_handler, rtc_handler,led_handler)
+    uhr = BuchstabenuhrSquare(config_handler, network_handler, rtc_handler, led_handler)
     # TODO run Buchstabenuhr
     try:
-       print("Start main try")
+        print("Start main try")
 
-       print(network_handler.wlan.isconnected())
-       if network_handler.wlan.isconnected():
-        print("Connected to WLAN - load time from network")
-        network_time = network_handler.request_current_time("Europe/Berlin")
-        print (f"network_time: {network_time}")
-        if network_time is not None:
-            print("Calibrate RTC")
-            rtc_handler.calibrate_rtc(network_time)
+        print(f"Connected to WLAN: {network_handler.wlan.isconnected()}")
+        if network_handler.wlan.isconnected():
+            print("Connected to WLAN - load time from network")
+            network_time = network_handler.request_current_time("Europe/Berlin")
+            print (f"network_time: {network_time}")
+            if network_time is not None:
+                print("Calibrate RTC")
+                rtc_handler.calibrate_rtc(network_time)
+            else:
+                print("No network time available")
         else:
-            print("No network time available")
+            print("No network available - run offline")
+        loop = asyncio.get_event_loop()
+        loop.create_task(uhr.run())
+        # loop.create_task(network_handler.startWebServer())
+        # loop.run_until_complete(asyncio.gather(network_handler.startWebServer(), uhr.run()))
+        loop.run_until_complete(asyncio.gather(uhr.run()))
+        # loop.run_forever()
 
-        for i in range(30):
-            time2 = rtc_handler.DS3231_ReadTime(0)
-            print(time2)
-            time.sleep(1)
-        # uhr.run()
-    except:
-        print("Exception while running Buchstabenuhr")
+    except Exception as e:
+        print(f"Exception while running Buchstabenuhr: {e}")
         # TODO Add handle of exceptions .. maybe blinking for 10s and restart 
 
+
     finally:
+        led_handler.set_state(led_handler.STATE_ERROR)
         network_handler.wlan.disconnect()
         print("Disconnected from WLAN")
         print(network_handler.wlan.status())
         print(network_handler.wlan.isconnected())
         print(network_handler.wlan.ifconfig())
         print("End main try")
-
-
-def test2():
-    print("Test Main")
-    rtc2 = RTCHandler()
-    time2 = rtc2.DS3231_ReadTime(0)
-    print(time2)
-    for i in range(10):
-        time2 = rtc2.DS3231_ReadTime(0)
-        print(time2)
-        time.sleep(10)
+        time.sleep(1)
+        print("Restarting")
+        machine.reset()
 
 if __name__ == "__main__":
     main()

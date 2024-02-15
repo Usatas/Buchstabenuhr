@@ -1,180 +1,181 @@
 import time
-import uasyncio as asyncio
-
-# 0,1, 2,3, X, 5,6
-#
-#
-#
-#
-#
-#
-#
-#
 
 # LED Addresses
-# Reihe 1: 0 - 11
-
-DISABLED = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 37, 40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 72, 75, 78, 81, 84, 87,
-            90, 93, 96, 99, 101, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 141, 144, 147, 150, 153, 156,
-            159, 162, 165, 168, 171, 176, 179, 182, 185, 188, 191, 194, 197, 200, 203, 206, 211, 214, 217, 220, 223,
-            226, 239, 233, 236, 239, 242, 247, 250, 253, 256, 259, 262, 265, 268, 271, 274, 277, 282, 285, 288, 291,
-            294, 297, 300, 303, 306, 309, 312, 317, 320, 323]
-E_1_1 = [0, 1]  # 2
-S_1_2 = [3, 4]  # 5
+# Reihe 1: 0 - 21 (links nach rechts)
+E_1_1 = [0, 1]  
+S_1_2 = [2, 3]  
 ES_1 = E_1_1 + S_1_2
 
-C_1_3 = [6, 7]  # 8
+K_1_3 = [4, 5]
 
-I_1_4 = [9, 10]  # 11
-S_1_5 = [12, 13]  # 14
-T_1_6 = [15, 16]  # 17
+I_1_4 = [6, 7]  
+S_1_5 = [8, 9]
+T_1_6 = [10, 11]
 IST_1 = I_1_4 + S_1_5 + T_1_6
 
-C_1_7 = [18, 19]  # 20
+A_1_7 = [12, 13]
 
-F_1_8 = [21, 22]  # 23
-UE_1_9 = [24, 25]  # 26
-N_1_10 = [27, 28]  # 29
-F_1_11 = [30, 31]  # 32
+F_1_8 = [14, 15]
+UE_1_9 = [16,17]
+N_1_10 = [18, 19]
+F_1_11 = [20, 21] 
 FUENF_1 = F_1_8 + UE_1_9 + N_1_10 + F_1_11
 
-C_1_12 = [33, 34]
-# Reihe 2: 12 - 23
-Z_2_1 = [35, 36]  # 37
-E_2_2 = [38, 39]  # 40
-H_2_3 = [41, 42]  # 43
-N_2_4 = [44, 45]  # 46
+# Reihe 2: 21 - 43 (rechts nach links)
+Z_2_1 = [42, 43]
+E_2_2 = [40, 41]
+H_2_3 =  [38, 39]
+N_2_4 = [36, 37]
 ZEHN_2 = Z_2_1 + E_2_2 + H_2_3 + N_2_4
-C_2_5 = [47, 48]  # 49
-Z_2_6 = [50, 51]  # 52
-W_2_7 = [53, 54]  # 55
-A_2_8 = [56, 57]  # 58
-N_2_9 = [59, 60]  # 61
-Z_2_10 = [62, 63]  # 64
-I_2_11 = [65, 66]  # 67
-G_2_12 = [68, 69]
-ZWANZIG_2 = Z_2_6 + W_2_7 + A_2_8 + N_2_9 + Z_2_10 + I_2_11 + G_2_12
-# Reihe 3: 24 - 35
-C_3_1 = [70, 71]  # 72
-D_3_2 = [73, 74]  # 75
-R_3_3 = [76, 77]  # 78
-E_3_4 = [79, 80]  # 81
-I_3_5 = [82, 83]  # 84
-DREI_3 = D_3_2 + R_3_3 + E_3_4 + I_3_5
-V_3_6 = [85, 86]  # 87
-I_3_7 = [88, 89]  # 90
-E_3_8 = [91, 92]  # 93
-R_3_9 = [94, 95]  # 96
-VIER_3 = V_3_6 + I_3_7 + E_3_8 + R_3_9
-T_3_10 = [97, 98]  # 99
-E_3_11 = [99, 100]  # 101
-L_3_12 = [102, 103]
-TEL_3 = T_3_10 + E_3_11 + L_3_12
-# Reihe 4: 36 - 47
-V_4_1 = [104, 105]  # 106
-O_4_2 = [107, 108]  # 109
-R_4_3 = [110, 111]  # 112
+
+Z_2_5 = [34, 35]
+W_2_6 = [32, 33]
+A_2_7 = [30, 31]
+N_2_8 = [28, 29]
+Z_2_9 = [26, 27]
+I_2_10 = [24, 25]
+G_2_11 = [22, 23]
+ZWANZIG_2 = Z_2_5 + W_2_6 + A_2_7 + N_2_8 + Z_2_9 + I_2_10 + G_2_11
+
+# Reihe 3: 44 - 65 (links nach rechts)
+D_3_1 = [44, 45]
+R_3_2 = [46, 47]
+E_3_3 = [48, 49]
+I_3_4 = [50,51]
+DREI_3 = D_3_1 + R_3_2 + E_3_3 + I_3_4
+V_3_5 = [52, 53]
+I_3_6 = [54, 55]
+E_3_7 = [56, 57]
+R_3_8 = [58, 59]
+VIER_3 = V_3_5 + I_3_6 + E_3_7 + R_3_8
+T_3_9 = [60, 61] 
+E_3_10 = [62, 63]
+L_3_11 = [64, 65]
+TEL_3 = T_3_9 + E_3_10 + L_3_11
+
+# Reihe 4: 66 - 87 (rechts nach links) # TODO Hier weiter die Buchstaben anpassen
+V_4_1 = [86, 87] 
+O_4_2 = [84, 85] 
+R_4_3 = [82, 83] 
 VOR_4 = V_4_1 + O_4_2 + R_4_3
-N_4_4 = [113, 114]  # 115
-A_4_5 = [116, 117]  # 118
-C_4_6 = [119, 120]  # 121
-H_4_7 = [122, 123]  # 124
-NACH_4 = N_4_4 + A_4_5 + C_4_6 + H_4_7
-C_4_8 = [125, 126]  # 127
-H_4_9 = [128, 129]  # 130
-A_4_10 = [131, 132]  # 133
-L_4_11 = [134, 135]  # 136
-B_4_12 = [137, 138]
-HALB_4 = H_4_9 + A_4_10 + L_4_11 + B_4_12
-# Reihe 5: 48 - 59
-E_5_1 = [139, 140]  # 141
-L_5_2 = [142, 143]  # 144
-F_5_3 = [145, 146]  # 147
-ELF_5 = E_5_1 + L_5_2 + F_5_3
-C_5_4 = [148, 149]  # 150
-Z_5_5 = [151, 152]  # 153
-E_5_6 = [154, 155]  # 156
-H_5_7 = [157, 158]  # 159
-N_5_8 = [160, 161]  # 162
-ZEHN_5 = Z_5_5 + E_5_6 + H_5_7 + N_5_8
-E_5_9 = [163, 164]  # 165
-I_5_10 = [166, 167]  # 168
-N_5_11 = [169, 170]  # 171
-EIN_5 = E_5_9 + I_5_10 + N_5_11
-S_5_12 = [172, 173]
-# Reihe 6: 60 - 71
-C_6_1 = [174, 175]  # 176
-N_6_2 = [177, 178]  # 179
-E_6_3 = [180, 181]  # 182
-U_6_4 = [183, 184]  # 185
-N_6_5 = [186, 187]  # 188
-NEUN_6 = N_6_2 + E_6_3 + U_6_4 + N_6_5
-C_6_6 = [189, 190]  # 191
-S_6_7 = [192, 193]  # 194
-E_6_8 = [195, 196]  # 197
-C_6_9 = [198, 199]  # 200
-H_6_10 = [201, 202]  # 203
-S_6_11 = [204, 205]  # 206
-SECHS_6 = S_6_7 + E_6_8 + C_6_9 + H_6_10 + S_6_11
-C_6_12 = [207, 208]
-# Reihe 7: 72 - 83
-D_7_1 = [209, 210]  # 211
-R_7_2 = [212, 213]  # 214
-E_7_3 = [215, 216]  # 217
-I_7_4 = [218, 219]  # 220
+F_4_4 = [80, 81] 
+U_4_5 = [78, 79] 
+N_4_6 = [76, 77] 
+K_4_7 = [74, 75] 
+FUNK_4 = F_4_4 + U_4_5 + N_4_6 + K_4_7
+N_4_8 = [72, 73] 
+A_4_9 = [70, 71] 
+C_4_10 = [68, 69]
+H_4_11 = [66, 67]
+NACH_4 = N_4_8 + A_4_9 + C_4_10 + H_4_11
+
+# Reihe 5: 88 - 109 (links nach rechts)
+H_5_1 = [88, 89]
+A_5_2 = [90, 91]
+L_5_3 = [92, 93] 
+B_5_4 = [94, 95]  
+HALB_5 = H_5_1 + A_5_2 + L_5_3 + B_5_4
+A_5_5 = [96, 97]
+E_5_6 = [98, 99]
+L_5_7 = [100, 101]  
+F_5_8 = [102, 103]  
+ELF_5 = E_5_6 + L_5_7 + F_5_8
+UE_5_9 = [104, 105]  
+N_5_10 = [106, 107]  
+F_5_11 = [108, 109]  
+FUENF_5 = F_5_8+ UE_5_9 + N_5_10 + F_5_11
+
+# Reihe 6: 110 - 131 (rechts nach links)
+E_6_1 = [130, 131]  
+I_6_2 = [128, 129]  
+N_6_3 = [126, 127]  
+S_6_4 = [124, 125]  
+EIN_6 = E_6_1+ I_6_2 + N_6_3 
+EINS_6 = E_6_1+ I_6_2 + N_6_3 + S_6_4
+X_6_5 = [122, 123]  
+A_6_6 = [120, 121]  
+M_6_7 = [118, 119]  
+Z_6_8 = [116, 117]  
+W_6_9 = [114, 115]  
+E_6_10 = [112, 113] 
+I_6_11 = [110, 111] 
+ZWEI_6 = Z_6_8 + W_6_9 + E_6_10 + I_6_11
+
+# Reihe 7: 132 - 153 (links nach rechts)
+D_7_1 = [132, 133]  
+R_7_2 = [134, 135]  
+E_7_3 = [136, 137]  
+I_7_4 = [138, 139]  
 DREI_7 = D_7_1 + R_7_2 + E_7_3 + I_7_4
-V_7_5 = [221, 222]  # 223
-I_7_6 = [224, 225]  # 226
-E_7_7 = [237, 238]  # 239
-R_7_8 = [231, 232]  # 233
-VIER_7 = V_7_5 + I_7_6 + E_7_7 + R_7_8
-A_7_9 = [234, 235]  # 236
-C_7_10 = [237, 238]  # 239
-H_7_11 = [240, 241]  # 242
-T_7_12 = [243, 244]
-ACHT_7 = A_7_9 + C_7_10 + H_7_11 + T_7_12
-# Reihe 8: 84 - 95
-S_8_1 = [245, 246]  # 247
-I_8_2 = [248, 249]  # 250
-E_8_3 = [251, 252]  # 253
-B_8_4 = [254, 255]  # 256
-E_8_5 = [257, 258]  # 259
-N_8_6 = [260, 261]  # 262
-SIEBEN_8 = S_8_1 + I_8_2 + E_8_3 + B_8_4 + E_8_5 + N_8_6
-C_8_7 = [263, 264]  # 265
-Z_8_8 = [266, 267]  # 268
-W_8_9 = [269, 270]  # 271
-OE_8_10 = [272, 273]  # 274
-L_8_11 = [275, 276]  # 277
-F_8_12 = [278, 279]
-ZWOELF_8 = Z_8_8 + W_8_9 + OE_8_10 + L_8_11 + F_8_12
-# Reihe 9: 96 - 107
-Z_9_1 = [280, 281]  # 282
-W_9_2 = [283, 284]  # 285
-E_9_3 = [286, 287]  # 288
-I_9_4 = [289, 290]  # 291
-ZWEI_9 = Z_9_1 + W_9_2 + E_9_3 + I_9_4
-F_9_5 = [292, 293]  # 294
-UE_9_6 = [295, 296]  # 297
-N_9_7 = [298, 299]  # 300
-F_9_8 = [301, 302]  # 303
-FUENF_9 = F_9_5 + UE_9_6 + N_9_7 + F_9_8
-C_9_9 = [304, 305]  # 306
-U_9_10 = [307, 308]  # 309
-H_9_11 = [310, 311]  # 312
-R_9_12 = [313, 314]
-UHR_9 = U_9_10 + H_9_11 + R_9_12
-# Reihe 10: 108 - 111
-HERZ_MIN_10_1 = [315, 316]  # 317
-HERZ_MIN_10_2 = [318, 319]  # 320
-HERZ_MIN_10_3 = [321, 322]  # 323
-HERZ_MIN_10_4 = [324, 325]
+P_7_5 = [140, 141]
+M_7_6 = [142, 143] 
+J_7_7 = [144, 145] 
+V_7_8 = [146, 147] 
+I_7_9 = [148, 149] 
+E_7_10 = [150, 151]
+R_7_11 = [152, 153]
+VIER_7 = V_7_8 + I_7_9 + E_7_10 + R_7_11
+
+# Reihe 8: 154 - 175 (rechts nach links)
+S_8_1 = [174, 175]  
+E_8_2 = [172, 173]  
+C_8_3 = [170, 171]  
+H_8_4 = [168, 169]  
+S_8_5 = [166,167]  
+SECHS_8 = S_8_1 + E_8_2 + C_8_3 + H_8_4 + S_8_5
+N_8_6 = [164, 165]  
+L_8_7 = [162, 163]  
+A_8_8 = [160, 161]  
+C_8_9 = [158, 159]  
+H_8_10 = [156, 157] 
+T_8_11 = [154, 155] 
+ACHT_8 = A_8_8 + C_8_9 + H_8_10 + T_8_11 
+
+# Reihe 9: 176 - 197 (links nach rechts)
+S_9_1 = [176, 177]  
+I_9_2 = [178, 179]  
+E_9_3 = [180, 181]  
+B_9_4 = [182, 183]  
+E_9_5 = [184, 185]  
+N_9_6 = [186, 187]  
+SIEBEN_9 = S_9_1 + I_9_2 + E_9_3 + B_9_4 + E_9_5 + N_9_6
+Z_9_7 = [188, 189]  
+W_9_8 = [190, 191]  
+OE_9_9 = [192, 193]  
+L_9_10 = [194, 195]  
+F_9_11 = [196, 197]  
+ZWOELF_9 = Z_9_7 + W_9_8 + OE_9_9 + L_9_10 + F_9_11
+
+# Reihe 10: 198 - 219 (rechts nach links)
+Z_10_1 = [218, 219]
+E_10_2 = [216, 217]
+H_10_3 = [214, 215]
+N_10_4 = [212, 213]
+ZEHN_10 = Z_10_1 + E_10_2 + H_10_3 + N_10_4
+E_10_5 = [210, 211]
+U_10_6 = [208, 209]
+N_10_7 = [206, 207]
+NEUN_10 = N_10_4 + E_10_5 + U_10_6 + N_10_7
+K_10_8 = [204, 205]
+U_10_9 = [202, 203]
+H_10_10 = [200, 201]
+R_10_11 = [198, 199]
+UHR_10 = U_10_9 + H_10_10 + R_10_11
 
 
-class Buchstabenuhr():
+# Minuten LEDs 220 - 223
+MINUTE_1 = [223]
+MINUTE_2 = [222] 
+MINUTE_3 = [221]
+MINUTE_4 = [220]
+
+NUM_LEDS = 224
+MAX_BRIGHTNESS = 255/2 # 50% brightness
+
+class BuchstabenuhrSquare():
     config = {}
-    default_config = {"wlan_ssid": "Buchstabenuhr",
-                      "wlan_password": "Buchstabenuhr",
+    default_config = {"wlan_ssid": "BuchstabenuhrSquare",
+                      "wlan_password": "BuchstabenuhrSquare",
                       "wlan_mode": "host",
                       "time_zone": "Europe/Berlin",
                       "available_time_zones": ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers",
@@ -355,7 +356,9 @@ class Buchstabenuhr():
         self.network_handler = network_handler
         self.rtc_handler = rtc_handler
         self.led_handler = led_handler
-        self.led_handler.set_disabled_leds(DISABLED)
+        self.led_handler.set_max_brightness(MAX_BRIGHTNESS)
+        self.led_handler.set_num_leds(NUM_LEDS)
+        self.led_handler.set_leds_disabled([])
 
         self.config_handler.initialize_default_config(
             self.default_config)  # TODO think about a better solution to prevent inconsistent default configs (maybe a class that holds the default config and the config handler just uses that)
@@ -379,16 +382,15 @@ class Buchstabenuhr():
 
     # TODO show start up animation
 
-    async def run(self):
+    def run(self):
+        print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
         min = 00
         hour = 00
         error_leds = []
-
         just_updated = True  # to prevent reloading time every 10s
         while True:
-            print("Buchstabenuhr running")
             # Reload time every 12h
             if min == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
@@ -397,7 +399,7 @@ class Buchstabenuhr():
                 # TODO Error if loading time failed => maybe set a C as indicator
 
                 if temp_min < 0 or temp_hour < 0:
-                    error_leds += C_1_1
+                    error_leds += K_1_3
                 else:
                     # todo update RTC
                     min = temp_min
@@ -407,18 +409,38 @@ class Buchstabenuhr():
             if min == 5 and just_updated:
                 just_updated = False
 
-            # TODO load time from RTC
+            # Get time from RTC
             (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
-            # TODO Show LEDs
-            self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 0.8, 0.1)
-            await asyncio.sleep(1)  # sleep for 10s => Time scale is min so... this is fine
+            # Show LEDs
+            # self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 1, 0.1)
+            self.led_handler.pixels_fill_and_show(on_leds)
+            time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
+
+    def setup__wlan_config_web_server(self):
+        html = """<!DOCTYPE html>
+    <html>
+    <head><title>Wi-Fi Setup</title></head>
+    <body>
+    <h1>Wi-Fi Setup</h1>
+    <form action="/save" method="post">
+        <label for="ssid">Wi-Fi SSID:</label>
+        <input type="text" id="ssid" name="ssid" required><br>
+        <label for="password">Wi-Fi Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Save and Connect">
+    </form>
+    </body>
+    </html>
+    """
 
     def interpret_time_to_led(self, min, hour):
+        print(f"interpret_time_to_led: {hour}:{min}")
         if min < 0 or hour < 0:
             return False
 
-        hearts = min % 5
+        minute = min % 5
         on_leds = []
 
         # ES_1 IST_1
@@ -438,15 +460,15 @@ class Buchstabenuhr():
         elif min < 30:
             # FUENF_1 VOR_4 HALB_4
             hour += 1
-            on_leds += FUENF_1 + VOR_4 + HALB_4
+            on_leds += FUENF_1 + VOR_4 + HALB_5
         elif min < 35:
             # HALB_4
             hour += 1
-            on_leds += HALB_4
+            on_leds += HALB_5
         elif min < 40:
             # FUENF_1 NACH_4 HALB_4
             hour += 1
-            on_leds += FUENF_1 + NACH_4 + HALB_4
+            on_leds += FUENF_1 + NACH_4 + HALB_5
         elif min < 45:
             # ZWANZIG_2 VOR_4
             hour += 1
@@ -471,13 +493,13 @@ class Buchstabenuhr():
         # now a switch case on hour
         if hour == 1:
             # EIN_5
-            on_leds += EIN_5
+            on_leds += EIN_6
             if min >= 5:
                 # EINS_5 S_5
-                on_leds += S_5_12
+                on_leds += S_6_4
         elif hour == 2:
             # ZWEI_9
-            on_leds += ZWEI_9
+            on_leds += ZWEI_6
         elif hour == 3:
             # DREI_7
             on_leds += DREI_7
@@ -486,36 +508,43 @@ class Buchstabenuhr():
             on_leds += VIER_7
         elif hour == 5:
             # FUENF_9
-            on_leds += FUENF_9
+            on_leds += FUENF_5
         elif hour == 6:
             # SECHS_6
-            on_leds += SECHS_6
+            on_leds += SECHS_8
         elif hour == 7:
             # SIEBEN_8
-            on_leds += SIEBEN_8
+            on_leds += SIEBEN_9
         elif hour == 8:
             # ACHT_7
-            on_leds += ACHT_7
+            on_leds += ACHT_8
         elif hour == 9:
             # NEUN_6
-            on_leds += NEUN_6
+            on_leds += NEUN_10
         elif hour == 10:
             # ZEHN_5
-            on_leds += ZEHN_5
+            on_leds += ZEHN_10
         elif hour == 11:
             # ELF_5
             on_leds += ELF_5
         else:
             # ZWOELF_8
-            on_leds += ZWOELF_8
+            on_leds += ZWOELF_9
 
-        if hearts >= 1:
-            on_leds += HERZ_MIN_10_1
-        if hearts >= 2:
-            on_leds += HERZ_MIN_10_2
-        if hearts >= 3:
-            on_leds += HERZ_MIN_10_3
-        if hearts >= 4:
-            on_leds += HERZ_MIN_10_4
+        if minute >= 1:
+            on_leds += MINUTE_1
+        if minute >= 2:
+            on_leds += MINUTE_2
+        if minute >= 3:
+            on_leds += MINUTE_3
+        if minute >= 4:
+            on_leds += MINUTE_4
 
         return on_leds
+
+    # Example 1. Make a GET request for google.com and print HTML
+    # Print the html content from google.com
+    # print("1. Querying google.com:")
+    # r = urequests.get("http://www.google.com")
+    # print(r.content)
+    # r.close()
