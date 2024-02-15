@@ -11,6 +11,7 @@ from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
 import time
 import uasyncio as asyncio 
+import machine
 
 LEDPIN = 25
 AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
@@ -27,7 +28,7 @@ def main():
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
     led_handler = LEDHandler(config_handler)
-    led_handler.ledtest()
+    led_handler.set_state(led_handler.STATE_WARNING)
     # TODO Connect to network
     network_handler = NetworkHandler(config_handler)
     is_connected = network_handler.connect_to_wlan()
@@ -71,13 +72,16 @@ def main():
 
 
     finally:
+        led_handler.set_state(led_handler.STATE_ERROR)
         network_handler.wlan.disconnect()
         print("Disconnected from WLAN")
         print(network_handler.wlan.status())
         print(network_handler.wlan.isconnected())
         print(network_handler.wlan.ifconfig())
         print("End main try")
+        time.sleep(1)
+        print("Restarting")
+        machine.reset()
 
 if __name__ == "__main__":
     main()
-    print("end")

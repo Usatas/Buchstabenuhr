@@ -21,6 +21,9 @@ class LEDHandler():
     WHITE = (255, 255, 255)
     COLORS = [BLACK, RED, YELLOW, GREEN, CYAN, BLUE, PURPLE, WHITE]
     PIN_NUM = 28
+    STATE_ERROR = 0
+    STATE_WARNING = 1
+    STATE_SUCCESS = 2
 
     def __init__(self, config_handler):
         print("LEDHandler init")
@@ -36,10 +39,10 @@ class LEDHandler():
         if config is None:
             config = self.config_handler.config
         print("LEDHandler apply_loaded_config")
-        self.brightness = self.config.get("brightness",100) # TODO Hier prüfen ob die Keys vorhanden sind
+        self.brightness = self.config.get("brightness",100)
         self.foreground_color= self.config.get("foreground_color",self.WHITE)
         self.background_color= self.config.get("background_color",self.WHITE)
-        self.foreground_brightness= self.config.get("foreground_brightness",0.8)
+        self.foreground_brightness= self.config.get("foreground_brightness",0.5)
         self.background_brightness= self.config.get("background_brightness",0.01)
         
     def set_max_brightness(self, max_brigthness):
@@ -79,7 +82,6 @@ class LEDHandler():
             background_brightness (float): The brightness level of the background LEDs (0.0 to 1.0).
         """
         # dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])
-        print("pixels_fill_and_show_expert_mode")
         for i in range(self.NUM_LEDS):
             if i in on_leds:
                 self.leds[i] = tuple(int(i * foreground_brightness) for i in foreground_color)
@@ -129,4 +131,23 @@ class LEDHandler():
         np = neopixel.NeoPixel(neo_di, num_pixels)
         
         np[0] = (255,0,0)
+        np.write()
+
+    def set_state(self, state=0):
+        """
+        Show state of the clock on the LED strip.
+
+        This function initializes the LED strip, sets the color of the first LED to red(error), yellow(warning) or green(success),
+        and updates the LED strip to display the new color.
+        """
+        num_pixels = 12
+        neo_di = machine.Pin(28)
+        np = neopixel.NeoPixel(neo_di, num_pixels)
+        
+        if state == self.STATE_ERROR:
+            np[0] = self.RED
+        elif state == self.STATE_WARNING:
+            np[0] = self.YELLOW
+        elif state == self.STATE_SUCCESS:
+            np[0] = self.GREEN
         np.write()

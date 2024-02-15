@@ -414,8 +414,6 @@ class BuchstabenuhrSquare():
             print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
             # Show LEDs
-            print("show LEDs")
-            print(on_leds)
             # self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 1, 0.1)
             self.led_handler.pixels_fill_and_show(on_leds)
             time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
