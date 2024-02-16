@@ -18,12 +18,10 @@ WLAN_DEFAUT = {
 
 def main():
     print("main")
-    # TODO Load config from file
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
     led_handler = LEDHandler(config_handler)
     led_handler.set_state(led_handler.STATE_WARNING)
-    # TODO Connect to network
     network_handler = NetworkHandler(config_handler)
     is_connected = network_handler.connect_to_wlan()
     print(f"Connected to WLAN: {is_connected}")
