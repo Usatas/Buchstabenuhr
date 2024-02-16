@@ -100,7 +100,6 @@ class LEDHandler():
     def set_disabled_leds(self,DISABLED):
         self.DISABLED = DISABLED
 
-
     def pixels_fill_and_show_test(self):
         """
         Fills the LED strip with colors from the COLORS list and shows the updated colors on the LEDs.
@@ -109,13 +108,9 @@ class LEDHandler():
         The dimmed color is calculated by reducing the intensity of each RGB component by 50%.
         After setting the colors, the method updates the LEDs and waits for 1000 milliseconds before proceeding to the next color.
         """
-        # dimmer_ar = array.array("I", [0 for _ in range(self.NUM_LEDS)])
-        for c in self.COLORS:
+        for color in self.COLORS:
             for i in range(len(self.leds)):
-                r = int(((c >> 8) & 0xFF) * 0.5)
-                g = int(((c >> 16) & 0xFF)* 0.5) 
-                b = int((c & 0xFF)* 0.5) 
-                self.leds[i] = (g << 16) + (r << 8) + b
+                self.leds[i] = color
             self.leds.write()
             time.sleep_ms(1000)
 

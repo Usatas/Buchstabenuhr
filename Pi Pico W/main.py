@@ -1,9 +1,3 @@
-# A simple example that:
-# - Connects to a WiFi Network defined by "ssid" and "password"
-# - Performs a GET request (loads a webpage)
-# - Queries the current time from a server
-
-
 from ConfigHandler import ConfigHandler
 from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
@@ -38,12 +32,8 @@ def main():
         time.sleep(10)
         is_connected = network_handler.connect_to_wlan()
         print(f"Connected to WLAN: {is_connected}")
-    # TODO Initialize RCT
     rtc_handler = RTCHandler()
-    #led_handler.pixels_fill_and_show_test()
-    # TODO pass config, network and rtc to Buchstabenuhr
     uhr = BuchstabenuhrSquare(config_handler, network_handler, rtc_handler, led_handler)
-    # TODO run Buchstabenuhr
     try:
         print("Start main try")
 
@@ -68,8 +58,6 @@ def main():
 
     except Exception as e:
         print(f"Exception while running Buchstabenuhr: {e}")
-        # TODO Add handle of exceptions .. maybe blinking for 10s and restart 
-
 
     finally:
         led_handler.set_state(led_handler.STATE_ERROR)

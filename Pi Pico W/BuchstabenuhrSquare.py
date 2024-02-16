@@ -379,8 +379,7 @@ class BuchstabenuhrSquare():
 
     def show_start_up_animation(self):
         print("show_start_up_animation")
-
-    # TODO show start up animation
+        # TODO show start up animation
 
     def run(self):
         print("run BuchstabenuhrSquare")
@@ -462,7 +461,7 @@ class BuchstabenuhrSquare():
         if min >= 25:
             hour += 1
 
-        # limitiert die Uhrzeit to 1 - 12
+        # convert to 12h format
         hour = hour % 12 if hour > 12 else hour
 
         hour_dict = {
