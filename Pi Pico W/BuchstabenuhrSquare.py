@@ -1,4 +1,4 @@
-import time
+import uasyncio as asyncio
 
 # LED Addresses
 # Reihe 1: 0 - 21 (links nach rechts)
@@ -381,7 +381,7 @@ class BuchstabenuhrSquare():
         print("show_start_up_animation")
         # TODO show start up animation
 
-    def run(self):
+    async def run(self):
         print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
@@ -415,45 +415,26 @@ class BuchstabenuhrSquare():
             # Show LEDs
             # self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 1, 0.1)
             self.led_handler.pixels_fill_and_show(on_leds)
-            time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
-
-    def setup__wlan_config_web_server(self):
-        html = """<!DOCTYPE html>
-    <html>
-    <head><title>Wi-Fi Setup</title></head>
-    <body>
-    <h1>Wi-Fi Setup</h1>
-    <form action="/save" method="post">
-        <label for="ssid">Wi-Fi SSID:</label>
-        <input type="text" id="ssid" name="ssid" required><br>
-        <label for="password">Wi-Fi Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Save and Connect">
-    </form>
-    </body>
-    </html>
-    """
+            await asyncio.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
-        print (f"interpret_time_to_led: {hour}:{min}")
-        
         if min < 0 or hour < 0:
             return False
 
         on_leds = ES_1 + IST_1
 
         min_dict = {
-            range(0, 10): FUENF_1 + NACH_4,
-            range(10, 15): ZEHN_2 + NACH_4,
-            range(15, 20): VIER_3 + TEL_3 + NACH_4,
-            range(20, 25): ZWANZIG_2 + NACH_4,
-            range(25, 30): FUENF_1 + VOR_4 + HALB_5,
-            range(30, 35): HALB_5,
-            range(35, 40): FUENF_1 + NACH_4 + HALB_5,
-            range(40, 45): ZWANZIG_2 + VOR_4,
-            range(45, 50): VIER_3 + TEL_3 + VOR_4,
-            range(50, 55): ZEHN_2 + VOR_4,
-            range(55, 60): FUENF_1 + VOR_4
+            tuple(range(0, 10)): FUENF_1 + NACH_4,
+            tuple(range(10, 15)): ZEHN_2 + NACH_4,
+            tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
+            tuple(range(20, 25)): ZWANZIG_2 + NACH_4,
+            tuple(range(25, 30)): FUENF_1 + VOR_4 + HALB_5,
+            tuple(range(30, 35)): HALB_5,
+            tuple(range(35, 40)): FUENF_1 + NACH_4 + HALB_5,
+            tuple(range(40, 45)): ZWANZIG_2 + VOR_4,
+            tuple(range(45, 50)): VIER_3 + TEL_3 + VOR_4,
+            tuple(range(50, 55)): ZEHN_2 + VOR_4,
+            tuple(range(55, 60)): FUENF_1 + VOR_4
         }
 
         on_leds += next(min_dict[key] for key in min_dict if min in key)

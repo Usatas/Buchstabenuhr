@@ -97,6 +97,11 @@ class LEDHandler():
     def pixels_fill(self,on_leds):
         self.pixels_fill_custom(on_leds, self.foreground_color,self.background_color)
 
+    def clear_all_pixels(self):
+        for i in range(self.NUM_LEDS):
+            self.leds[i] = (0,0,0)
+        self.leds.write()
+
     def set_disabled_leds(self,DISABLED):
         self.DISABLED = DISABLED
 

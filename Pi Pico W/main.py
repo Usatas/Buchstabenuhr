@@ -3,8 +3,8 @@ from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
 from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
+import uasyncio as asyncio
 import time
-import uasyncio as asyncio 
 import machine
 
 LEDPIN = 25
@@ -16,7 +16,7 @@ WLAN_DEFAUT = {
     "wlan_mode": "host"
 }
 
-def main():
+async def main():
     print("main")
     config_handler = ConfigHandler("config.json")
     config_handler.load_config_from_file()
@@ -47,17 +47,19 @@ def main():
                 print("No network time available")
         else:
             print("No network available - run offline")
-        loop = asyncio.get_event_loop()
-        loop.create_task(uhr.run())
-        # loop.create_task(network_handler.startWebServer())
-        # loop.run_until_complete(asyncio.gather(network_handler.startWebServer(), uhr.run()))
-        loop.run_until_complete(asyncio.gather(uhr.run()))
-        # loop.run_forever()
 
+        asyncio.create_task(uhr.run())
+        print(f"Web server started on http://{network_handler.wlan.ifconfig()[0]}:5000/")
+        await network_handler.run_webserver()
+
+
+    except OSError as e:
+        print(f"Connection error: {e}")
     except Exception as e:
         print(f"Exception while running Buchstabenuhr: {e}")
 
     finally:
+        led_handler.clear_all_pixels()
         led_handler.set_state(led_handler.STATE_ERROR)
         network_handler.wlan.disconnect()
         print("Disconnected from WLAN")
@@ -70,4 +72,4 @@ def main():
         machine.reset()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
