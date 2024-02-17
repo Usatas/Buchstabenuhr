@@ -14,6 +14,7 @@ def remove_dir(directory):
 
 
 if __name__ == "__main__":
+    os.remove('config.json')
     files = os.listdir()
     for file in files:
         print(file)

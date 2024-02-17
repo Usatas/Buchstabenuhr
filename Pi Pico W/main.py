@@ -1,11 +1,12 @@
-from ConfigHandler import ConfigHandler
+import uasyncio as asyncio
+import time
+import machine
+
+from ConfigHandler import Config
 from NetworkHandler import NetworkHandler
 from RTCHandler import RTCHandler
 from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
-import uasyncio as asyncio
-import time
-import machine
 
 LEDPIN = 25
 AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
@@ -17,12 +18,11 @@ WLAN_DEFAUT = {
 }
 
 async def main():
-    print("main")
-    config_handler = ConfigHandler("config.json")
+    config_handler = Config()
     config_handler.load_config_from_file()
-    led_handler = LEDHandler(config_handler)
+    led_handler = LEDHandler()
     led_handler.set_state(led_handler.STATE_WARNING)
-    network_handler = NetworkHandler(config_handler)
+    network_handler = NetworkHandler()
     is_connected = network_handler.connect_to_wlan()
     print(f"Connected to WLAN: {is_connected}")
     if not is_connected:
@@ -31,7 +31,7 @@ async def main():
         is_connected = network_handler.connect_to_wlan()
         print(f"Connected to WLAN: {is_connected}")
     rtc_handler = RTCHandler()
-    uhr = BuchstabenuhrSquare(config_handler, network_handler, rtc_handler, led_handler)
+    uhr = BuchstabenuhrSquare(network_handler, rtc_handler, led_handler)
     try:
         print("Start main try")
 

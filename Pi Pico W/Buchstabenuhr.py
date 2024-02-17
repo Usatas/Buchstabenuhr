@@ -366,7 +366,6 @@ class Buchstabenuhr():
     def apply_loaded_config(self):
         self.time_zone = self.config.get("time_zone", "Europe/Berlin")
         self.available_time_zones = self.config.get("available_time_zones", ["Europe/Berlin"])
-        # self.config_handler.save_config(self.config) # save the loaded config just in case there are some new keys with default values
 
     def set_config_to_default(self):
         print("set config to default")

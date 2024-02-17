@@ -49,13 +49,13 @@
             xhr.open("POST", '/save', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
-                baseColor: baseColorInput.value,
-                wordColor: wordColorInput.value,
-                baseLumination: baseLuminationInput.value,
-                wordLumination: wordLuminationInput.value,
+                background_color: baseColorInput.value,
+                foreground_color: wordColorInput.value,
+                background_brightness: baseLuminationInput.value,
+                foreground_brightness: wordLuminationInput.value,
                 time: timeInput.value,
                 timezone: 'Berlin',
-                ssid: ssidInput.value,
-                password: passwordInput.value
+                wlan_ssid: ssidInput.value,
+                wlan_password: passwordInput.value
             }));
         });</script></body></html>

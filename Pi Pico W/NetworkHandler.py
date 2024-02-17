@@ -1,19 +1,18 @@
 # Class that gets Network information and connects to a network if it doesn't work it host its own network
 import json
-
 import network  # handles connecting to WiFi
 import urequests  # handles making and servicing network requests
 import ure
-
-from microdot import Microdot, Response
-
 import machine
 import time
 # import neopixel
 import array, time
-from machine import Pin
 import rp2
 import math
+
+from ConfigHandler import Config
+from machine import Pin
+from microdot import Microdot, Response
 
 # Create a regular expression pattern for validating Wi-Fi credentials
 ssid_pattern = ure.compile("^[a-zA-Z0-9_-]{1,32}$")
@@ -70,56 +69,53 @@ html_content = """
             xhr.open("POST", '/save', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
-                baseColor: baseColorInput.value,
-                wordColor: wordColorInput.value,
-                baseLumination: baseLuminationInput.value,
-                wordLumination: wordLuminationInput.value,
+                background_color: baseColorInput.value,
+                foreground_color: wordColorInput.value,
+                background_brightness: baseLuminationInput.value,
+                foreground_brightness: wordLuminationInput.value,
                 time: timeInput.value,
                 timezone: 'Berlin',
-                ssid: ssidInput.value,
-                password: passwordInput.value
+                wlan_ssid: ssidInput.value,
+                wlan_password: passwordInput.value
             }));
         });</script></body></html>
 """
 
+def hex_to_rgb(hex_color):
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 class NetworkHandler():
-    config = {}
-    wlan_ssid = ""
-    wlan_password = ""
-    wlan_mode = ""
 
-    def __init__(self, config_handler):
+    def __init__(self):
         print("NetworkHandler init")
-        self.config_handler = config_handler
-        self.apply_loaded_config()
+        self.config = Config()
         self.app = Microdot()
         self.app.route('/')(self.index) 
         self.app.route('/save', methods=['POST'])(self.handlePostRequest)
+        self.wlan = None
 
-    def apply_loaded_config(self):
-        self.config = self.config_handler.config
-        self.wlan_ssid = self.config.get("wlan_ssid", "Buchstabenuhr")
-        self.wlan_password = self.config_handler.config.get("wlan_password", "Buchstabenuhr")
-        self.wlan_mode = self.config.get("wlan_mode", "host")
 
     def connect_to_wlan(self, ssid="", password="", mode=""):
         print(f"connect_to_wlan: ssid: \"{ssid}\", mode: \"{mode}\"")
         if ssid == "" or mode == "":
-            ssid = self.wlan_ssid
-            password = self.wlan_password
-            mode = self.wlan_mode
+            ssid = self.config.get("wlan_ssid")
+            password = self.config.get("wlan_password")
+            mode = self.config.get("wlan_mode")
             print(f"connect_to_wlan with loaded config: ssid: \"{ssid}\",  mode: \"{mode}\"")
 
-        self.wlan_ssid = ssid
-        self.wlan_password = password
-        self.wlan_mode = mode
+        
+        # TODO: Ich glaube die drei Zeilen müssen raus. 
+        self.config.set("wlan_ssid", ssid)
+        self.config.set("wlan_password", password)
+        self.config.set("wlan_mode", mode)
+
         if mode == "host":
             print(f"Opening WLAN \"{ssid}\"")
             self.wlan = network.WLAN(network.AP_IF)
             self.wlan.config(essid=ssid, password=password)
             self.wlan.active(True)
             while self.wlan.active == False:
-                pass
+                pass  # time.sleep(0.1)?
             print("Access point active")
             print(self.wlan.ifconfig())
         else:
@@ -127,7 +123,7 @@ class NetworkHandler():
             self.wlan = network.WLAN(network.STA_IF)
             self.wlan.active(True)
             while self.wlan.active == False:
-                pass
+                pass  # time.sleep(0.1)?
             # Fill in your network name (ssid) and password here:
             self.wlan.connect(ssid, password)
             print(f"Connecting successful: {self.wlan.isconnected()}")
@@ -159,24 +155,40 @@ class NetworkHandler():
             print("Exception while requesting current time")
             return None
         
-
-    
     def index(self, request):  
         return Response(html_content, headers={'Content-Type': 'text/html'})
 
+    def getConfig(self, request):  
+        return Response(json.dumps(self.config.get_config()), headers={'Content-Type': 'application/json'})
 
     def handlePostRequest(self, request):
             content_dict = json.loads(request.body)
 
-            if content_dict is not None:
-                print(content_dict)
-                ssid = content_dict.get("ssid", "")
-                password = content_dict.get("password", "")
-                if ssid_pattern.match(ssid) and password_pattern.match(password):
-                    print(f"new credentials = {ssid}, {password}")
-                return Response("OK", headers={'Content-Type': 'text/html'})
-            else:
+            if content_dict is None:
                 return Response("Error", headers={'Content-Type': 'text/html'})    
+            
+            print(content_dict)
+            ssid = content_dict.get("ssid", "")
+            password = content_dict.get("password", "")
+
+            """ this could be a function to only set ssid and password if it matches a specific pattern
+                if key == "wlan_ssid" and ssid_pattern.match(value) or key == "wlan_password" and password_pattern.match(value):
+                    self.config.set(key, value)
+                    continue
+            """
+
+            background_color = hex_to_rgb(content_dict.get("background_color", "0xFFFFFF"))
+            foreground_color = hex_to_rgb(content_dict.get("foreground_color", "0xFFFFFF"))
+            background_brightness = int(content_dict.get("background_brightness", "1")) / 100
+            foreground_brightness = int(content_dict.get("foreground_brightness", "50")) / 100
+                
+            self.config.set("background_color", background_color)
+            self.config.set("foreground_color", foreground_color)
+            self.config.set("background_brightness", background_brightness)
+            self.config.set("foreground_brightness", foreground_brightness)
+            self.config.save_config()
+
+            return Response("OK", headers={'Content-Type': 'text/html'})
             
     async def run_webserver(self):
         print("run_webserver")
