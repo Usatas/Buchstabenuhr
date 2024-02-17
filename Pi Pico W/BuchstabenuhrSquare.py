@@ -379,8 +379,7 @@ class BuchstabenuhrSquare():
 
     def show_start_up_animation(self):
         print("show_start_up_animation")
-
-    # TODO show start up animation
+        # TODO show start up animation
 
     def run(self):
         print("run BuchstabenuhrSquare")
@@ -436,115 +435,54 @@ class BuchstabenuhrSquare():
     """
 
     def interpret_time_to_led(self, min, hour):
-        print(f"interpret_time_to_led: {hour}:{min}")
+        print (f"interpret_time_to_led: {hour}:{min}")
+        
         if min < 0 or hour < 0:
             return False
 
-        minute = min % 5
-        on_leds = []
+        on_leds = ES_1 + IST_1
 
-        # ES_1 IST_1
-        on_leds += ES_1 + IST_1
-        if min < 10:
-            # FUENF_1 NACH_4
-            on_leds += FUENF_1 + NACH_4
-        elif min < 15:
-            # ZEHN_2 NACH_4
-            on_leds += ZEHN_2 + NACH_4
-        elif min < 20:
-            # VIER_3 TEL_3 NACH_4
-            on_leds += VIER_3 + TEL_3 + NACH_4
-        elif min < 25:
-            # ZWANZIG_2 NACH_4
-            on_leds += ZWANZIG_2 + NACH_4
-        elif min < 30:
-            # FUENF_1 VOR_4 HALB_4
-            hour += 1
-            on_leds += FUENF_1 + VOR_4 + HALB_5
-        elif min < 35:
-            # HALB_4
-            hour += 1
-            on_leds += HALB_5
-        elif min < 40:
-            # FUENF_1 NACH_4 HALB_4
-            hour += 1
-            on_leds += FUENF_1 + NACH_4 + HALB_5
-        elif min < 45:
-            # ZWANZIG_2 VOR_4
-            hour += 1
-            on_leds += ZWANZIG_2 + VOR_4
-        elif min < 50:
-            # VIER_3 TEL_3 VOR_4
-            hour += 1
-            on_leds += VIER_3 + TEL_3 + VOR_4
-        elif min < 55:
-            # ZEHN_2 VOR_4
-            hour += 1
-            on_leds += ZEHN_2 + VOR_4
-        elif min < 60:
-            # FUENF_1 VOR_4
-            on_leds += FUENF_1 + VOR_4
+        min_dict = {
+            range(0, 10): FUENF_1 + NACH_4,
+            range(10, 15): ZEHN_2 + NACH_4,
+            range(15, 20): VIER_3 + TEL_3 + NACH_4,
+            range(20, 25): ZWANZIG_2 + NACH_4,
+            range(25, 30): FUENF_1 + VOR_4 + HALB_5,
+            range(30, 35): HALB_5,
+            range(35, 40): FUENF_1 + NACH_4 + HALB_5,
+            range(40, 45): ZWANZIG_2 + VOR_4,
+            range(45, 50): VIER_3 + TEL_3 + VOR_4,
+            range(50, 55): ZEHN_2 + VOR_4,
+            range(55, 60): FUENF_1 + VOR_4
+        }
 
-        # limitet to 1 - 12
-        if hour > 24:
-            hour -= 12
-        if hour > 12:
-            hour -= 12
-        # now a switch case on hour
-        if hour == 1:
-            # EIN_5
-            on_leds += EIN_6
-            if min >= 5:
-                # EINS_5 S_5
-                on_leds += S_6_4
-        elif hour == 2:
-            # ZWEI_9
-            on_leds += ZWEI_6
-        elif hour == 3:
-            # DREI_7
-            on_leds += DREI_7
-        elif hour == 4:
-            # VIER_7
-            on_leds += VIER_7
-        elif hour == 5:
-            # FUENF_9
-            on_leds += FUENF_5
-        elif hour == 6:
-            # SECHS_6
-            on_leds += SECHS_8
-        elif hour == 7:
-            # SIEBEN_8
-            on_leds += SIEBEN_9
-        elif hour == 8:
-            # ACHT_7
-            on_leds += ACHT_8
-        elif hour == 9:
-            # NEUN_6
-            on_leds += NEUN_10
-        elif hour == 10:
-            # ZEHN_5
-            on_leds += ZEHN_10
-        elif hour == 11:
-            # ELF_5
-            on_leds += ELF_5
-        else:
-            # ZWOELF_8
-            on_leds += ZWOELF_9
+        on_leds += next(min_dict[key] for key in min_dict if min in key)
+        
+        if min >= 25:
+            hour += 1
 
-        if minute >= 1:
-            on_leds += MINUTE_1
-        if minute >= 2:
-            on_leds += MINUTE_2
-        if minute >= 3:
-            on_leds += MINUTE_3
-        if minute >= 4:
-            on_leds += MINUTE_4
+        # convert to 12h format
+        hour = hour % 12 if hour > 12 else hour
+
+        hour_dict = {
+            1: EIN_6 + (S_6_4 if min >= 5 else []),
+            2: ZWEI_6,
+            3: DREI_7,
+            4: VIER_7,
+            5: FUENF_5,
+            6: SECHS_8,
+            7: SIEBEN_9,
+            8: ACHT_8,
+            9: NEUN_10,
+            10: ZEHN_10,
+            11: ELF_5,
+            12: ZWOELF_9
+        }
+
+        on_leds += hour_dict.get(hour, [])
+
+        min_list = MINUTE_1 + MINUTE_2 + MINUTE_3 + MINUTE_4
+        minutes_left = min % 5
+        on_leds += min_list[:minutes_left]
 
         return on_leds
-
-    # Example 1. Make a GET request for google.com and print HTML
-    # Print the html content from google.com
-    # print("1. Querying google.com:")
-    # r = urequests.get("http://www.google.com")
-    # print(r.content)
-    # r.close()
