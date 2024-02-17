@@ -1,18 +1,8 @@
-import time
 import uasyncio as asyncio
-
-# 0,1, 2,3, X, 5,6
-#
-#
-#
-#
-#
-#
-#
-#
+from ConfigHandler import Config
 
 # LED Addresses
-# Reihe 1: 0 - 11
+# Reihe 1: 0 - 34  (links nach rechts)
 
 DISABLED = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 37, 40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 72, 75, 78, 81, 84, 87,
             90, 93, 96, 99, 101, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 141, 144, 147, 150, 153, 156,
@@ -39,22 +29,24 @@ F_1_11 = [30, 31]  # 32
 FUENF_1 = F_1_8 + UE_1_9 + N_1_10 + F_1_11
 
 C_1_12 = [33, 34]
-# Reihe 2: 12 - 23
-Z_2_1 = [35, 36]  # 37
-E_2_2 = [38, 39]  # 40
-H_2_3 = [41, 42]  # 43
-N_2_4 = [44, 45]  # 46
+
+# Reihe 2: 34 - 69 (rechts nach links)
+Z_2_1 = [68, 69]
+E_2_2 = [65, 66]  # 67
+H_2_3 = [62, 63]  # 64
+N_2_4 = [59, 60]  # 61
 ZEHN_2 = Z_2_1 + E_2_2 + H_2_3 + N_2_4
-C_2_5 = [47, 48]  # 49
-Z_2_6 = [50, 51]  # 52
-W_2_7 = [53, 54]  # 55
-A_2_8 = [56, 57]  # 58
-N_2_9 = [59, 60]  # 61
-Z_2_10 = [62, 63]  # 64
-I_2_11 = [65, 66]  # 67
-G_2_12 = [68, 69]
+C_2_5 =  [56, 57]  # 58
+Z_2_6 =  [53, 54]  # 55
+W_2_7 = [50, 51]  # 52
+A_2_8 =[47, 48]  # 49 
+N_2_9 = [44, 45]  # 46 
+Z_2_10 = [41, 42]  # 43 
+I_2_11 = [38, 39]  # 40 
+G_2_12 = [35, 36]  # 37
 ZWANZIG_2 = Z_2_6 + W_2_7 + A_2_8 + N_2_9 + Z_2_10 + I_2_11 + G_2_12
-# Reihe 3: 24 - 35
+
+# Reihe 3: 24 - 35 (links nach rechts)
 C_3_1 = [70, 71]  # 72
 D_3_2 = [73, 74]  # 75
 R_3_3 = [76, 77]  # 78
@@ -70,23 +62,25 @@ T_3_10 = [97, 98]  # 99
 E_3_11 = [99, 100]  # 101
 L_3_12 = [102, 103]
 TEL_3 = T_3_10 + E_3_11 + L_3_12
-# Reihe 4: 36 - 47
-V_4_1 = [104, 105]  # 106
-O_4_2 = [107, 108]  # 109
-R_4_3 = [110, 111]  # 112
+
+# Reihe 4: 104 - 138 (rechts nach links) 
+V_4_1 = [137, 138]
+O_4_2 = [134, 135]  # 136
+R_4_3 =  [131, 132]  # 133
 VOR_4 = V_4_1 + O_4_2 + R_4_3
-N_4_4 = [113, 114]  # 115
-A_4_5 = [116, 117]  # 118
-C_4_6 = [119, 120]  # 121
-H_4_7 = [122, 123]  # 124
+N_4_4 = [128, 129]  # 130
+A_4_5 = [125, 126]  # 127
+C_4_6 =  [122, 123]  # 124
+H_4_7 =   [119, 120]  # 121
 NACH_4 = N_4_4 + A_4_5 + C_4_6 + H_4_7
-C_4_8 = [125, 126]  # 127
-H_4_9 = [128, 129]  # 130
-A_4_10 = [131, 132]  # 133
-L_4_11 = [134, 135]  # 136
-B_4_12 = [137, 138]
+C_4_8 = [116, 117]  # 118
+H_4_9 = [113, 114]  # 115  
+A_4_10 = [110, 111]  # 112
+L_4_11 = [107, 108]  # 109 
+B_4_12 =  [104, 105]  # 106
 HALB_4 = H_4_9 + A_4_10 + L_4_11 + B_4_12
-# Reihe 5: 48 - 59
+
+# Reihe 5: 48 - 59 (links nach rechts)
 E_5_1 = [139, 140]  # 141
 L_5_2 = [142, 143]  # 144
 F_5_3 = [145, 146]  # 147
@@ -102,22 +96,24 @@ I_5_10 = [166, 167]  # 168
 N_5_11 = [169, 170]  # 171
 EIN_5 = E_5_9 + I_5_10 + N_5_11
 S_5_12 = [172, 173]
-# Reihe 6: 60 - 71
-C_6_1 = [174, 175]  # 176
-N_6_2 = [177, 178]  # 179
-E_6_3 = [180, 181]  # 182
-U_6_4 = [183, 184]  # 185
-N_6_5 = [186, 187]  # 188
+
+# Reihe 6: 60 - 71 (rechts nach links)
+C_6_1 = [207, 208]
+N_6_2 = [204, 205]  # 206
+E_6_3 =  [201, 202]  # 203
+U_6_4 =  [198, 199]  # 200
+N_6_5 = [195, 196]  # 197
 NEUN_6 = N_6_2 + E_6_3 + U_6_4 + N_6_5
-C_6_6 = [189, 190]  # 191
-S_6_7 = [192, 193]  # 194
-E_6_8 = [195, 196]  # 197
-C_6_9 = [198, 199]  # 200
-H_6_10 = [201, 202]  # 203
-S_6_11 = [204, 205]  # 206
+C_6_6 =[192, 193]  # 194
+S_6_7 =  [189, 190]  # 191 
+E_6_8 = [186, 187]  # 188 
+C_6_9 = [183, 184]  # 185
+H_6_10 = [180, 181]  # 182
+S_6_11 = [177, 178]  # 179 
 SECHS_6 = S_6_7 + E_6_8 + C_6_9 + H_6_10 + S_6_11
-C_6_12 = [207, 208]
-# Reihe 7: 72 - 83
+C_6_12 = [174, 175]  # 176 
+
+# Reihe 7: 72 - 83 (links nach rechts)
 D_7_1 = [209, 210]  # 211
 R_7_2 = [212, 213]  # 214
 E_7_3 = [215, 216]  # 217
@@ -133,22 +129,24 @@ C_7_10 = [237, 238]  # 239
 H_7_11 = [240, 241]  # 242
 T_7_12 = [243, 244]
 ACHT_7 = A_7_9 + C_7_10 + H_7_11 + T_7_12
-# Reihe 8: 84 - 95
-S_8_1 = [245, 246]  # 247
-I_8_2 = [248, 249]  # 250
-E_8_3 = [251, 252]  # 253
-B_8_4 = [254, 255]  # 256
-E_8_5 = [257, 258]  # 259
-N_8_6 = [260, 261]  # 262
+
+# Reihe 8: 84 - 95 (rechts nach links)
+S_8_1 = [278, 279]
+I_8_2 = [275, 276]  # 277
+E_8_3 = [272, 273]  # 274
+B_8_4 = [269, 270]  # 271
+E_8_5 = [266, 267]  # 268
+N_8_6 = [263, 264]  # 265
 SIEBEN_8 = S_8_1 + I_8_2 + E_8_3 + B_8_4 + E_8_5 + N_8_6
-C_8_7 = [263, 264]  # 265
-Z_8_8 = [266, 267]  # 268
-W_8_9 = [269, 270]  # 271
-OE_8_10 = [272, 273]  # 274
-L_8_11 = [275, 276]  # 277
-F_8_12 = [278, 279]
+C_8_7 = [260, 261]  # 262 
+Z_8_8 = [257, 258]  # 259 
+W_8_9 = [254, 255]  # 256 
+OE_8_10 = [251, 252]  # 253
+L_8_11 = [248, 249]  # 250 
+F_8_12 = [245, 246]  # 247 
 ZWOELF_8 = Z_8_8 + W_8_9 + OE_8_10 + L_8_11 + F_8_12
-# Reihe 9: 96 - 107
+
+# Reihe 9: 96 - 107 (links nach rechts)
 Z_9_1 = [280, 281]  # 282
 W_9_2 = [283, 284]  # 285
 E_9_3 = [286, 287]  # 288
@@ -164,219 +162,34 @@ U_9_10 = [307, 308]  # 309
 H_9_11 = [310, 311]  # 312
 R_9_12 = [313, 314]
 UHR_9 = U_9_10 + H_9_11 + R_9_12
-# Reihe 10: 108 - 111
+
+# Reihe 10 Minuten LEDs: 108 - 111
 HERZ_MIN_10_1 = [315, 316]  # 317
 HERZ_MIN_10_2 = [318, 319]  # 320
 HERZ_MIN_10_3 = [321, 322]  # 323
 HERZ_MIN_10_4 = [324, 325]
 
+NUM_LEDS = 326
 
 class Buchstabenuhr():
     config = {}
-    default_config = {"wlan_ssid": "Buchstabenuhr",
-                      "wlan_password": "Buchstabenuhr",
-                      "wlan_mode": "host",
-                      "time_zone": "Europe/Berlin",
-                      "available_time_zones": ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers",
-                                               "Africa/Asmara", "Africa/Asmera", "Africa/Bamako", "Africa/Bangui",
-                                               "Africa/Banjul", "Africa/Bissau", "Africa/Blantyre",
-                                               "Africa/Brazzaville", "Africa/Bujumbura", "Africa/Cairo",
-                                               "Africa/Casablanca", "Africa/Ceuta", "Africa/Conakry", "Africa/Dakar",
-                                               "Africa/Dar_es_Salaam", "Africa/Djibouti", "Africa/Douala",
-                                               "Africa/El_Aaiun", "Africa/Freetown", "Africa/Gaborone", "Africa/Harare",
-                                               "Africa/Johannesburg", "Africa/Juba", "Africa/Kampala",
-                                               "Africa/Khartoum", "Africa/Kigali", "Africa/Kinshasa", "Africa/Lagos",
-                                               "Africa/Libreville", "Africa/Lome", "Africa/Luanda", "Africa/Lubumbashi",
-                                               "Africa/Lusaka", "Africa/Malabo", "Africa/Maputo", "Africa/Maseru",
-                                               "Africa/Mbabane", "Africa/Mogadishu", "Africa/Monrovia",
-                                               "Africa/Nairobi", "Africa/Ndjamena", "Africa/Niamey",
-                                               "Africa/Nouakchott", "Africa/Ouagadougou", "Africa/Porto-Novo",
-                                               "Africa/Sao_Tome", "Africa/Timbuktu", "Africa/Tripoli", "Africa/Tunis",
-                                               "Africa/Windhoek", "America/Adak", "America/Anchorage",
-                                               "America/Anguilla", "America/Antigua", "America/Araguaina",
-                                               "America/Argentina/Buenos_Aires", "America/Argentina/Catamarca",
-                                               "America/Argentina/ComodRivadavia", "America/Argentina/Cordoba",
-                                               "America/Argentina/Jujuy", "America/Argentina/La_Rioja",
-                                               "America/Argentina/Mendoza", "America/Argentina/Rio_Gallegos",
-                                               "America/Argentina/Salta", "America/Argentina/San_Juan",
-                                               "America/Argentina/San_Luis", "America/Argentina/Tucuman",
-                                               "America/Argentina/Ushuaia", "America/Aruba", "America/Asuncion",
-                                               "America/Atikokan", "America/Atka", "America/Bahia",
-                                               "America/Bahia_Banderas", "America/Barbados", "America/Belem",
-                                               "America/Belize", "America/Blanc-Sablon", "America/Boa_Vista",
-                                               "America/Bogota", "America/Boise", "America/Buenos_Aires",
-                                               "America/Cambridge_Bay", "America/Campo_Grande", "America/Cancun",
-                                               "America/Caracas", "America/Catamarca", "America/Cayenne",
-                                               "America/Cayman", "America/Chicago", "America/Chihuahua",
-                                               "America/Coral_Harbour", "America/Cordoba", "America/Costa_Rica",
-                                               "America/Creston", "America/Cuiaba", "America/Curacao",
-                                               "America/Danmarkshavn", "America/Dawson", "America/Dawson_Creek",
-                                               "America/Denver", "America/Detroit", "America/Dominica",
-                                               "America/Edmonton", "America/Eirunepe", "America/El_Salvador",
-                                               "America/Ensenada", "America/Fort_Nelson", "America/Fort_Wayne",
-                                               "America/Fortaleza", "America/Glace_Bay", "America/Godthab",
-                                               "America/Goose_Bay", "America/Grand_Turk", "America/Grenada",
-                                               "America/Guadeloupe", "America/Guatemala", "America/Guayaquil",
-                                               "America/Guyana", "America/Halifax", "America/Havana",
-                                               "America/Hermosillo", "America/Indiana/Indianapolis",
-                                               "America/Indiana/Knox", "America/Indiana/Marengo",
-                                               "America/Indiana/Petersburg", "America/Indiana/Tell_City",
-                                               "America/Indiana/Vevay", "America/Indiana/Vincennes",
-                                               "America/Indiana/Winamac", "America/Indianapolis", "America/Inuvik",
-                                               "America/Iqaluit", "America/Jamaica", "America/Jujuy", "America/Juneau",
-                                               "America/Kentucky/Louisville", "America/Kentucky/Monticello",
-                                               "America/Knox_IN", "America/Kralendijk", "America/La_Paz",
-                                               "America/Lima", "America/Los_Angeles", "America/Louisville",
-                                               "America/Lower_Princes", "America/Maceio", "America/Managua",
-                                               "America/Manaus", "America/Marigot", "America/Martinique",
-                                               "America/Matamoros", "America/Mazatlan", "America/Mendoza",
-                                               "America/Menominee", "America/Merida", "America/Metlakatla",
-                                               "America/Mexico_City", "America/Miquelon", "America/Moncton",
-                                               "America/Monterrey", "America/Montevideo", "America/Montreal",
-                                               "America/Montserrat", "America/Nassau", "America/New_York",
-                                               "America/Nipigon", "America/Nome", "America/Noronha",
-                                               "America/North_Dakota/Beulah", "America/North_Dakota/Center",
-                                               "America/North_Dakota/New_Salem", "America/Nuuk", "America/Ojinaga",
-                                               "America/Panama", "America/Pangnirtung", "America/Paramaribo",
-                                               "America/Phoenix", "America/Port_of_Spain", "America/Port-au-Prince",
-                                               "America/Porto_Acre", "America/Porto_Velho", "America/Puerto_Rico",
-                                               "America/Punta_Arenas", "America/Rainy_River", "America/Rankin_Inlet",
-                                               "America/Recife", "America/Regina", "America/Resolute",
-                                               "America/Rio_Branco", "America/Rosario", "America/Santa_Isabel",
-                                               "America/Santarem", "America/Santiago", "America/Santo_Domingo",
-                                               "America/Sao_Paulo", "America/Scoresbysund", "America/Shiprock",
-                                               "America/Sitka", "America/St_Barthelemy", "America/St_Johns",
-                                               "America/St_Kitts", "America/St_Lucia", "America/St_Thomas",
-                                               "America/St_Vincent", "America/Swift_Current", "America/Tegucigalpa",
-                                               "America/Thule", "America/Thunder_Bay", "America/Tijuana",
-                                               "America/Toronto", "America/Tortola", "America/Vancouver",
-                                               "America/Virgin", "America/Whitehorse", "America/Winnipeg",
-                                               "America/Yakutat", "America/Yellowknife", "Antarctica/Casey",
-                                               "Antarctica/Davis", "Antarctica/DumontDUrville", "Antarctica/Macquarie",
-                                               "Antarctica/Mawson", "Antarctica/McMurdo", "Antarctica/Palmer",
-                                               "Antarctica/Rothera", "Antarctica/South_Pole", "Antarctica/Syowa",
-                                               "Antarctica/Troll", "Antarctica/Vostok", "Arctic/Longyearbyen",
-                                               "Asia/Aden", "Asia/Almaty", "Asia/Amman", "Asia/Anadyr", "Asia/Aqtau",
-                                               "Asia/Aqtobe", "Asia/Ashgabat", "Asia/Ashkhabad", "Asia/Atyrau",
-                                               "Asia/Baghdad", "Asia/Bahrain", "Asia/Baku", "Asia/Bangkok",
-                                               "Asia/Barnaul", "Asia/Beirut", "Asia/Bishkek", "Asia/Brunei",
-                                               "Asia/Calcutta", "Asia/Chita", "Asia/Choibalsan", "Asia/Chongqing",
-                                               "Asia/Chungking", "Asia/Colombo", "Asia/Dacca", "Asia/Damascus",
-                                               "Asia/Dhaka", "Asia/Dili", "Asia/Dubai", "Asia/Dushanbe",
-                                               "Asia/Famagusta", "Asia/Gaza", "Asia/Harbin", "Asia/Hebron",
-                                               "Asia/Ho_Chi_Minh", "Asia/Hong_Kong", "Asia/Hovd", "Asia/Irkutsk",
-                                               "Asia/Istanbul", "Asia/Jakarta", "Asia/Jayapura", "Asia/Jerusalem",
-                                               "Asia/Kabul", "Asia/Kamchatka", "Asia/Karachi", "Asia/Kashgar",
-                                               "Asia/Kathmandu", "Asia/Katmandu", "Asia/Khandyga", "Asia/Kolkata",
-                                               "Asia/Krasnoyarsk", "Asia/Kuala_Lumpur", "Asia/Kuching", "Asia/Kuwait",
-                                               "Asia/Macao", "Asia/Macau", "Asia/Magadan", "Asia/Makassar",
-                                               "Asia/Manila", "Asia/Muscat", "Asia/Nicosia", "Asia/Novokuznetsk",
-                                               "Asia/Novosibirsk", "Asia/Omsk", "Asia/Oral", "Asia/Phnom_Penh",
-                                               "Asia/Pontianak", "Asia/Pyongyang", "Asia/Qatar", "Asia/Qostanay",
-                                               "Asia/Qyzylorda", "Asia/Rangoon", "Asia/Riyadh", "Asia/Saigon",
-                                               "Asia/Sakhalin", "Asia/Samarkand", "Asia/Seoul", "Asia/Shanghai",
-                                               "Asia/Singapore", "Asia/Srednekolymsk", "Asia/Taipei", "Asia/Tashkent",
-                                               "Asia/Tbilisi", "Asia/Tehran", "Asia/Tel_Aviv", "Asia/Thimbu",
-                                               "Asia/Thimphu", "Asia/Tokyo", "Asia/Tomsk", "Asia/Ujung_Pandang",
-                                               "Asia/Ulaanbaatar", "Asia/Ulan_Bator", "Asia/Urumqi", "Asia/Ust-Nera",
-                                               "Asia/Vientiane", "Asia/Vladivostok", "Asia/Yakutsk", "Asia/Yangon",
-                                               "Asia/Yekaterinburg", "Asia/Yerevan", "Atlantic/Azores",
-                                               "Atlantic/Bermuda", "Atlantic/Canary", "Atlantic/Cape_Verde",
-                                               "Atlantic/Faeroe", "Atlantic/Faroe", "Atlantic/Jan_Mayen",
-                                               "Atlantic/Madeira", "Atlantic/Reykjavik", "Atlantic/South_Georgia",
-                                               "Atlantic/St_Helena", "Atlantic/Stanley", "Australia/ACT",
-                                               "Australia/Adelaide", "Australia/Brisbane", "Australia/Broken_Hill",
-                                               "Australia/Canberra", "Australia/Currie", "Australia/Darwin",
-                                               "Australia/Eucla", "Australia/Hobart", "Australia/LHI",
-                                               "Australia/Lindeman", "Australia/Lord_Howe", "Australia/Melbourne",
-                                               "Australia/North", "Australia/NSW", "Australia/Perth",
-                                               "Australia/Queensland", "Australia/South", "Australia/Sydney",
-                                               "Australia/Tasmania", "Australia/Victoria", "Australia/West",
-                                               "Australia/Yancowinna", "Brazil/Acre", "Brazil/DeNoronha", "Brazil/East",
-                                               "Brazil/West", "Canada/Atlantic", "Canada/Central", "Canada/Eastern",
-                                               "Canada/Mountain", "Canada/Newfoundland", "Canada/Pacific",
-                                               "Canada/Saskatchewan", "Canada/Yukon", "CET", "Chile/Continental",
-                                               "Chile/EasterIsland", "CST6CDT", "Cuba", "EET", "Egypt", "Eire", "EST",
-                                               "EST5EDT", "Etc/GMT", "Etc/GMT-0", "Etc/GMT-1", "Etc/GMT-10",
-                                               "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2",
-                                               "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7",
-                                               "Etc/GMT-8", "Etc/GMT-9", "Etc/GMT+0", "Etc/GMT+1", "Etc/GMT+10",
-                                               "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4",
-                                               "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9",
-                                               "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC",
-                                               "Etc/Zulu", "Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan",
-                                               "Europe/Athens", "Europe/Belfast", "Europe/Belgrade", "Europe/Berlin",
-                                               "Europe/Bratislava", "Europe/Brussels", "Europe/Bucharest",
-                                               "Europe/Budapest", "Europe/Busingen", "Europe/Chisinau",
-                                               "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar",
-                                               "Europe/Guernsey", "Europe/Helsinki", "Europe/Isle_of_Man",
-                                               "Europe/Istanbul", "Europe/Jersey", "Europe/Kaliningrad", "Europe/Kiev",
-                                               "Europe/Kirov", "Europe/Kyiv", "Europe/Lisbon", "Europe/Ljubljana",
-                                               "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta",
-                                               "Europe/Mariehamn", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow",
-                                               "Europe/Nicosia", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica",
-                                               "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara",
-                                               "Europe/San_Marino", "Europe/Sarajevo", "Europe/Saratov",
-                                               "Europe/Simferopol", "Europe/Skopje", "Europe/Sofia", "Europe/Stockholm",
-                                               "Europe/Tallinn", "Europe/Tirane", "Europe/Tiraspol", "Europe/Ulyanovsk",
-                                               "Europe/Uzhgorod", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna",
-                                               "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zagreb",
-                                               "Europe/Zaporozhye", "Europe/Zurich", "GB", "GB-Eire", "GMT", "GMT-0",
-                                               "GMT+0", "GMT0", "Greenwich", "Hongkong", "HST", "Iceland",
-                                               "Indian/Antananarivo", "Indian/Chagos", "Indian/Christmas",
-                                               "Indian/Cocos", "Indian/Comoro", "Indian/Kerguelen", "Indian/Mahe",
-                                               "Indian/Maldives", "Indian/Mauritius", "Indian/Mayotte",
-                                               "Indian/Reunion", "Iran", "Israel", "Jamaica", "Japan", "Kwajalein",
-                                               "Libya", "MET", "Mexico/BajaNorte", "Mexico/BajaSur", "Mexico/General",
-                                               "MST", "MST7MDT", "Navajo", "NZ", "NZ-CHAT", "Pacific/Apia",
-                                               "Pacific/Auckland", "Pacific/Bougainville", "Pacific/Chatham",
-                                               "Pacific/Chuuk", "Pacific/Easter", "Pacific/Efate", "Pacific/Enderbury",
-                                               "Pacific/Fakaofo", "Pacific/Fiji", "Pacific/Funafuti",
-                                               "Pacific/Galapagos", "Pacific/Gambier", "Pacific/Guadalcanal",
-                                               "Pacific/Guam", "Pacific/Honolulu", "Pacific/Johnston", "Pacific/Kanton",
-                                               "Pacific/Kiritimati", "Pacific/Kosrae", "Pacific/Kwajalein",
-                                               "Pacific/Majuro", "Pacific/Marquesas", "Pacific/Midway", "Pacific/Nauru",
-                                               "Pacific/Niue", "Pacific/Norfolk", "Pacific/Noumea", "Pacific/Pago_Pago",
-                                               "Pacific/Palau", "Pacific/Pitcairn", "Pacific/Pohnpei", "Pacific/Ponape",
-                                               "Pacific/Port_Moresby", "Pacific/Rarotonga", "Pacific/Saipan",
-                                               "Pacific/Samoa", "Pacific/Tahiti", "Pacific/Tarawa", "Pacific/Tongatapu",
-                                               "Pacific/Truk", "Pacific/Wake", "Pacific/Wallis", "Pacific/Yap",
-                                               "Poland", "Portugal", "PRC", "PST8PDT", "ROC", "ROK", "Singapore",
-                                               "Turkey", "UCT", "Universal", "US/Alaska", "US/Aleutian", "US/Arizona",
-                                               "US/Central", "US/East-Indiana", "US/Eastern", "US/Hawaii",
-                                               "US/Indiana-Starke", "US/Michigan", "US/Mountain", "US/Pacific",
-                                               "US/Samoa", "UTC", "W-SU", "WET", "Zulu"]
-                      }
-    time_zone = ""
 
-    def __init__(self, config_handler, network_handler, rtc_handler, led_handler):
+    def __init__(self,  network_handler, rtc_handler, led_handler):
         print("Init Buchstabenuhr")
-        self.config_handler = config_handler
+        self.config = Config()
         self.network_handler = network_handler
         self.rtc_handler = rtc_handler
         self.led_handler = led_handler
+        self.led_handler.set_num_leds(NUM_LEDS)
         self.led_handler.set_disabled_leds(DISABLED)
 
-        self.config_handler.initialize_default_config(
-            self.default_config)  # TODO think about a better solution to prevent inconsistent default configs (maybe a class that holds the default config and the config handler just uses that)
-        self.config = self.config_handler.load_config_from_file()
-        self.apply_loaded_config()
-        self.show_start_up_animation()
-
-    def apply_loaded_config(self):
-        self.time_zone = self.config.get("time_zone", "Europe/Berlin")
-        self.available_time_zones = self.config.get("available_time_zones", ["Europe/Berlin"])
-
-    def set_config_to_default(self):
-        print("set config to default")
-        self.config_handler.set_config_to_default()
-        self.apply_loaded_config()
-        self.network_handler.apply_loaded_config()
+        self.time_zone = self.config.get("time_zone")
+        self.available_time_zones = self.config.get("available_time_zones")
+        # self.show_start_up_animation()
 
     def show_start_up_animation(self):
+        # TODO show start up animation
         print("show_start_up_animation")
-
-    # TODO show start up animation
 
     async def run(self):
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
@@ -384,10 +197,8 @@ class Buchstabenuhr():
         min = 00
         hour = 00
         error_leds = []
-
         just_updated = True  # to prevent reloading time every 10s
         while True:
-            print("Buchstabenuhr running")
             # Reload time every 12h
             if min == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
@@ -396,7 +207,7 @@ class Buchstabenuhr():
                 # TODO Error if loading time failed => maybe set a C as indicator
 
                 if temp_min < 0 or temp_hour < 0:
-                    error_leds += C_1_1
+                    error_leds += C_1_3
                 else:
                     # todo update RTC
                     min = temp_min
@@ -406,115 +217,57 @@ class Buchstabenuhr():
             if min == 5 and just_updated:
                 just_updated = False
 
-            # TODO load time from RTC
+            # Get time from RTC
             (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
-            # TODO Show LEDs
-            self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 0.8, 0.1)
+            # Show LEDs
+            self.led_handler.pixels_fill_and_show(on_leds)
             await asyncio.sleep(1)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
         if min < 0 or hour < 0:
             return False
 
-        hearts = min % 5
-        on_leds = []
+        on_leds = ES_1 + IST_1
+        min_dict = {
+            tuple(range(0, 10)): FUENF_1 + NACH_4,
+            tuple(range(10, 15)): ZEHN_2 + NACH_4,
+            tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
+            tuple(range(20, 25)): ZWANZIG_2 + NACH_4,
+            tuple(range(25, 30)): FUENF_1 + VOR_4 + HALB_4,
+            tuple(range(30, 35)): HALB_4,
+            tuple(range(35, 40)): FUENF_1 + NACH_4 + HALB_4,
+            tuple(range(40, 45)): ZWANZIG_2 + VOR_4,
+            tuple(range(45, 50)): VIER_3 + TEL_3 + VOR_4,
+            tuple(range(50, 55)): ZEHN_2 + VOR_4,
+            tuple(range(55, 60)): FUENF_1 + VOR_4
+        }
+        on_leds += next(min_dict[key] for key in min_dict if min in key)
+        
+        if min >= 25:
+            hour += 1
 
-        # ES_1 IST_1
-        on_leds += ES_1 + IST_1
-        if min < 10:
-            # FUENF_1 NACH_4
-            on_leds += FUENF_1 + NACH_4
-        elif min < 15:
-            # ZEHN_2 NACH_4
-            on_leds += ZEHN_2 + NACH_4
-        elif min < 20:
-            # VIER_3 TEL_3 NACH_4
-            on_leds += VIER_3 + TEL_3 + NACH_4
-        elif min < 25:
-            # ZWANZIG_2 NACH_4
-            on_leds += ZWANZIG_2 + NACH_4
-        elif min < 30:
-            # FUENF_1 VOR_4 HALB_4
-            hour += 1
-            on_leds += FUENF_1 + VOR_4 + HALB_4
-        elif min < 35:
-            # HALB_4
-            hour += 1
-            on_leds += HALB_4
-        elif min < 40:
-            # FUENF_1 NACH_4 HALB_4
-            hour += 1
-            on_leds += FUENF_1 + NACH_4 + HALB_4
-        elif min < 45:
-            # ZWANZIG_2 VOR_4
-            hour += 1
-            on_leds += ZWANZIG_2 + VOR_4
-        elif min < 50:
-            # VIER_3 TEL_3 VOR_4
-            hour += 1
-            on_leds += VIER_3 + TEL_3 + VOR_4
-        elif min < 55:
-            # ZEHN_2 VOR_4
-            hour += 1
-            on_leds += ZEHN_2 + VOR_4
-        elif min < 60:
-            # FUENF_1 VOR_4
-            on_leds += FUENF_1 + VOR_4
+        # convert to 12h format
+        hour = hour % 12 if hour > 12 else hour
+        hour_dict = {
+            1: EIN_5 + (S_5_12 if min >= 5 else []),
+            2: ZWEI_9,
+            3: DREI_7,
+            4: VIER_7,
+            5: FUENF_9,
+            6: SECHS_6,
+            7: SIEBEN_8,
+            8: ACHT_7,
+            9: NEUN_6,
+            10: ZEHN_5,
+            11: ELF_5,
+            12: ZWOELF_8
+        }
 
-        # limitet to 1 - 12
-        if hour > 24:
-            hour -= 12
-        if hour > 12:
-            hour -= 12
-        # now a switch case on hour
-        if hour == 1:
-            # EIN_5
-            on_leds += EIN_5
-            if min >= 5:
-                # EINS_5 S_5
-                on_leds += S_5_12
-        elif hour == 2:
-            # ZWEI_9
-            on_leds += ZWEI_9
-        elif hour == 3:
-            # DREI_7
-            on_leds += DREI_7
-        elif hour == 4:
-            # VIER_7
-            on_leds += VIER_7
-        elif hour == 5:
-            # FUENF_9
-            on_leds += FUENF_9
-        elif hour == 6:
-            # SECHS_6
-            on_leds += SECHS_6
-        elif hour == 7:
-            # SIEBEN_8
-            on_leds += SIEBEN_8
-        elif hour == 8:
-            # ACHT_7
-            on_leds += ACHT_7
-        elif hour == 9:
-            # NEUN_6
-            on_leds += NEUN_6
-        elif hour == 10:
-            # ZEHN_5
-            on_leds += ZEHN_5
-        elif hour == 11:
-            # ELF_5
-            on_leds += ELF_5
-        else:
-            # ZWOELF_8
-            on_leds += ZWOELF_8
+        on_leds += hour_dict.get(hour, [])
 
-        if hearts >= 1:
-            on_leds += HERZ_MIN_10_1
-        if hearts >= 2:
-            on_leds += HERZ_MIN_10_2
-        if hearts >= 3:
-            on_leds += HERZ_MIN_10_3
-        if hearts >= 4:
-            on_leds += HERZ_MIN_10_4
-
+        min_list = HERZ_MIN_10_1+ HERZ_MIN_10_2+ HERZ_MIN_10_3+ HERZ_MIN_10_4
+        minutes_left = min % 5
+        on_leds += min_list[:minutes_left]
         return on_leds
