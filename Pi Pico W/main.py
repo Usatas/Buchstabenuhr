@@ -11,12 +11,6 @@ from LEDHandler import LEDHandler
 LEDPIN = 25
 AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
 
-WLAN_DEFAUT = {
-    "wlan_ssid": "Buchstabenuhr",
-    "wlan_password": "Buchstabenuhr",
-    "wlan_mode": "host"
-}
-
 async def main():
     config_handler = Config()
     config_handler.load_config_from_file()
@@ -69,7 +63,7 @@ async def main():
         print("End main try")
         time.sleep(1)
         print("Restarting")
-        machine.reset()
+        # machine.reset()
 
 if __name__ == "__main__":
     asyncio.run(main())

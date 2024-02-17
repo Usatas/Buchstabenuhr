@@ -54,7 +54,7 @@ E_3_10 = [62, 63]
 L_3_11 = [64, 65]
 TEL_3 = T_3_9 + E_3_10 + L_3_11
 
-# Reihe 4: 66 - 87 (rechts nach links) # TODO Hier weiter die Buchstaben anpassen
+# Reihe 4: 66 - 87 (rechts nach links)
 V_4_1 = [86, 87] 
 O_4_2 = [84, 85] 
 R_4_3 = [82, 83] 
@@ -175,7 +175,7 @@ NUM_LEDS = 224
 class BuchstabenuhrSquare():
 
     def __init__(self, network_handler, rtc_handler, led_handler):
-        print("Init Buchstabenuhr")
+        print("Init Buchstabenuhr Square")
         self.config = Config()
         self.network_handler = network_handler
         self.rtc_handler = rtc_handler

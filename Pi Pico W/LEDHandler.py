@@ -44,9 +44,9 @@ class LEDHandler():
     def pixels_fill_custom(self, on_leds, foreground_color, background_color):
         for i in range(len(self.leds)):
             if i in on_leds:
-                self.pixels_set(i, foreground_color)
+                self.pixels_set(i, tuple(foreground_color))
             else:
-                self.pixels_set(i, background_color)
+                self.pixels_set(i, tuple(background_color))
 
     # prefered method
     def pixels_fill_and_show(self, on_leds):
@@ -67,12 +67,12 @@ class LEDHandler():
         """
         for i in range(self.NUM_LEDS):
             if i in on_leds:
-                self.leds[i] = tuple(int(i * foreground_brightness) for i in foreground_color)
+                self.leds[i] = tuple(int(i * foreground_brightness) for i in tuple(foreground_color))
             else:
                 if i in self.DISABLED:
                     self.leds[i] = (0,0,0)
                 else:
-                    self.leds[i] = tuple(int(i * background_brightness) for i in background_color)
+                    self.leds[i] = tuple(int(i * background_brightness) for i in tuple(background_color))
 
         self.leds.write()
         time.sleep_ms(10)

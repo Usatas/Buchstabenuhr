@@ -517,7 +517,7 @@
                             <h1>Grundfarbe</h1>
                         </div>
                         <div class="colorpicker" id="base_color">
-                            <input type="color" />
+                            <input type="color" value="#ffffff"/>
                         </div>
                     </div>
                 </div>
@@ -528,7 +528,7 @@
                             <h1>Wortfarbe</h1>
                         </div>
                         <div class="colorpicker" id="word_color">
-                            <input type="color" />
+                            <input type="color" value="#ffffff"/>
                         </div>
                     </div>
                 </div>
@@ -645,7 +645,7 @@
                         <small class="text-muted">Admin</small>
                     </div>
                     <div class="profile-photo">
-                        <img src="images/profile-1.jpg">
+                       <!--<img src="images/profile-1.jpg">-->
                     </div>
                 </div>
             </div>
@@ -653,13 +653,12 @@
 
             <div class="user-profile">
                 <div class="logo">
-                    <img src="images/logo.jpg">
+                    <!--<img src="images/logo.jpg">-->
                     <h2>WordClock</h2>
                     <p>Web Interface</p>
                 </div>
             </div>
             
-            <!-- https://stackoverflow.com/questions/35509396/post-method-to-url-from-a-onclick-function -->
             <div class="save-button">
                 Speichern
             </div>
@@ -699,9 +698,7 @@
             wordColorDiv.style.backgroundColor = wordColorInput.value;
         });
 
-        saveButton.addEventListener('click', () => {
-            
-            //also safe it as a cookie here?
+        saveButton.addEventListener('click', () => {    
 
             console.log({
                 baseColor: baseColorInput.value,
