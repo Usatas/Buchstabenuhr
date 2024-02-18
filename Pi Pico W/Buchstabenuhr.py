@@ -199,8 +199,8 @@ class Buchstabenuhr():
         print("run Buchstabenuhr")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
-        minute = 00
-        hour = 00
+        minute = 0
+        hour = 0
         error_leds = []
         just_updated = True  # to prevent reloading time every 10s
         while True:
@@ -232,12 +232,12 @@ class Buchstabenuhr():
     def interpret_time_to_led(self, min, hour):
         min = int(min)
         hour = int(hour)
-        
         if min < 0 or hour < 0:
             return False
 
         on_leds = ES_1 + IST_1
         min_dict = {
+            tuple(range(0,5)): UHR_9,
             tuple(range(5, 10)): FUENF_1 + NACH_4,
             tuple(range(10, 15)): ZEHN_2 + NACH_4,
             tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
