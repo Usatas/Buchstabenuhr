@@ -195,8 +195,8 @@ class BuchstabenuhrSquare():
         print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
-        minute = 00
-        hour = 00
+        minute = 0
+        hour = 0
         error_leds = []
         just_updated = True  # to prevent reloading time every 10s
         while True:
@@ -232,6 +232,7 @@ class BuchstabenuhrSquare():
         on_leds = ES_1 + IST_1
 
         min_dict = {
+            tuple(range(0, 5)): UHR_10,
             tuple(range(5, 10)): FUENF_1 + NACH_4,
             tuple(range(10, 15)): ZEHN_2 + NACH_4,
             tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
