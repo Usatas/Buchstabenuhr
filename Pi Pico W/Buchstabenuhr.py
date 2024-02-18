@@ -177,7 +177,6 @@ HERZ_MIN_10_4 = [315, 316]  # 317
 NUM_LEDS = 326
 
 class Buchstabenuhr():
-    config = {}
 
     def __init__(self,  network_handler, rtc_handler, led_handler):
         print("Init Buchstabenuhr")
@@ -197,33 +196,33 @@ class Buchstabenuhr():
         print("show_start_up_animation")
 
     async def run(self):
+        print("run Buchstabenuhr")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
-        min = 00
+        minute = 00
         hour = 00
         error_leds = []
         just_updated = True  # to prevent reloading time every 10s
         while True:
             # Reload time every 12h
-            if min == 0 and hour % 12 == 0 and just_updated == False:
+            if minute == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
                 temp_min = time_json.get("min", -1)
                 temp_hour = time_json.get("hour", -1)
-                # TODO Error if loading time failed => maybe set a C as indicator
 
                 if temp_min < 0 or temp_hour < 0:
                     error_leds += C_1_3
                 else:
                     # todo update RTC
-                    min = temp_min
+                    minute = temp_min
                     hour = temp_hour
                     just_updated = True
 
-            if min == 5 and just_updated:
+            if minute == 5 and just_updated:
                 just_updated = False
 
             # Get time from RTC
-            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime()
             print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
             # Show LEDs
@@ -231,12 +230,15 @@ class Buchstabenuhr():
             await asyncio.sleep(1)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
+        min = int(min)
+        hour = int(hour)
+        
         if min < 0 or hour < 0:
             return False
 
         on_leds = ES_1 + IST_1
         min_dict = {
-            tuple(range(0, 10)): FUENF_1 + NACH_4,
+            tuple(range(5, 10)): FUENF_1 + NACH_4,
             tuple(range(10, 15)): ZEHN_2 + NACH_4,
             tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
             tuple(range(20, 25)): ZWANZIG_2 + NACH_4,
@@ -256,6 +258,7 @@ class Buchstabenuhr():
         # convert to 12h format
         hour = hour % 12 if hour > 12 else hour
         hour_dict = {
+            0: ZWOELF_8,
             1: EIN_5 + (S_5_12 if min >= 5 else []),
             2: ZWEI_9,
             3: DREI_7,
@@ -274,5 +277,15 @@ class Buchstabenuhr():
 
         min_list = HERZ_MIN_10_1+ HERZ_MIN_10_2+ HERZ_MIN_10_3+ HERZ_MIN_10_4
         minutes_left = min % 5
-        on_leds += min_list[:minutes_left]
+
+        if minutes_left > 0:
+            if minutes_left >= 1:
+                on_leds += HERZ_MIN_10_1
+            if minutes_left >= 2:
+                on_leds += HERZ_MIN_10_2
+            if minutes_left >= 3:
+                on_leds += HERZ_MIN_10_3
+            if minutes_left >= 4:
+                on_leds += HERZ_MIN_10_4
+
         return on_leds

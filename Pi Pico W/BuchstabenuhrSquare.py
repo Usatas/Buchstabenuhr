@@ -195,31 +195,30 @@ class BuchstabenuhrSquare():
         print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
-        min = 00
+        minute = 00
         hour = 00
         error_leds = []
         just_updated = True  # to prevent reloading time every 10s
         while True:
             # Reload time every 12h
-            if min == 0 and hour % 12 == 0 and just_updated == False:
+            if minute == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
                 temp_min = time_json.get("min", -1)
                 temp_hour = time_json.get("hour", -1)
-                # TODO Error if loading time failed => maybe set a C as indicator
 
                 if temp_min < 0 or temp_hour < 0:
                     error_leds += K_1_3
                 else:
                     # todo update RTC
-                    min = temp_min
+                    minute = temp_min
                     hour = temp_hour
                     just_updated = True
 
-            if min == 5 and just_updated:
+            if minute == 5 and just_updated:
                 just_updated = False
 
             # Get time from RTC
-            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime()
             print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
             # Show LEDs
@@ -233,7 +232,7 @@ class BuchstabenuhrSquare():
         on_leds = ES_1 + IST_1
 
         min_dict = {
-            tuple(range(0, 10)): FUENF_1 + NACH_4,
+            tuple(range(5, 10)): FUENF_1 + NACH_4,
             tuple(range(10, 15)): ZEHN_2 + NACH_4,
             tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
             tuple(range(20, 25)): ZWANZIG_2 + NACH_4,
@@ -255,6 +254,7 @@ class BuchstabenuhrSquare():
         hour = hour % 12 if hour > 12 else hour
 
         hour_dict = {
+            0: ZWOELF_9,
             1: EIN_6 + (S_6_4 if min >= 5 else []),
             2: ZWEI_6,
             3: DREI_7,

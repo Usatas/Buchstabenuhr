@@ -75,7 +75,7 @@ class RTCHandler():
         return value
 
     # read the Realtime from the DS3231 with errorhandling. Several output modes can be used.
-    def DS3231_ReadTime(self, mode=0):
+    def DS3231_ReadTime(self):
         try:
             buffer = self.i2c.readfrom_mem(
                 self.rtc_address, self.rtc_register, 7)      # read RT from DS3231 and write to the buffer variable. It's a list with 7 entries. Every entry needs to be converted from bcd to bin.
@@ -84,20 +84,11 @@ class RTCHandler():
             # day = self.bcd2bin(buffer[4])                  # same for the day value
             # weekday = self.w[self.bcd2bin(buffer[3])]      # weekday will be converted in the weekdays name or shortform like "Sunday" or "SUN"
             # weekday = self.bcd2bin(buffer[3])              # remove comment in this line if you want a number for the weekday and comment the line before.
-            hour = self.pre_zero(self.bcd2bin(buffer[2]))    # convert bcd to bin and add a "0" if necessary
-            minute = self.pre_zero(self.bcd2bin(buffer[1]))  # convert bcd to bin and add a "0" if necessary
-            second = self.pre_zero(self.bcd2bin(buffer[0]))  # convert bcd to bin and add a "0" if necessary
-
-            # time_string = str(hour) + ":" + str(minute) + ":" + str(second) + "      " + str(self.bcd2bin(buffer[3])) + " " + str(day) + "." + str(month) + "." + str(year)
-            #  print(time_string)
-            if mode == 0:  # mode 0 returns a list of second, minute, ...
-                # return second, minute, hour, weekday, day, month, year
-                return (second, minute, hour)
-            if mode == 1:  # mode 1 returns a formated string with time, weekday and date
-                time_string = str(hour) + ":" + str(minute) + ":" + str(second) + "      " + str(
-                    self.bcd2bin(buffer[3])) + " " + str(day) + "." + str(month) + "." + str(year)
-                return time_string
-            # if you need different format, feel free to add
+            hour = int(self.bcd2bin(buffer[2]))    # convert bcd to bin 
+            minute = int(self.bcd2bin(buffer[1]))  # convert bcd to bin 
+            second = int(self.bcd2bin(buffer[0]))  # convert bcd to bin
+            return (second, minute, hour)
+        
         except Exception as ex:
             print(f"Error while reading time: {ex}")
             return "Error: is the DS3231 not connected?"  # exception occurs in any case of error.
