@@ -94,38 +94,30 @@ class NetworkHandler():
         self.wlan = None
 
 
-    def connect_to_wlan(self, ssid="", password="", mode=""):
-        print(f"connect_to_wlan: ssid: \"{ssid}\", mode: \"{mode}\"")
-        if ssid == "" or mode == "":
-            ssid = self.config.get("wlan_ssid")
-            password = self.config.get("wlan_password")
-            mode = self.config.get("wlan_mode")
-            print(f"connect_to_wlan with loaded config: ssid: \"{ssid}\",  mode: \"{mode}\"")
-
-        
-        # TODO: Ich glaube die drei Zeilen müssen raus. 
-        self.config.set("wlan_ssid", ssid)
-        self.config.set("wlan_password", password)
-        self.config.set("wlan_mode", mode)
+    def connect_to_wlan(self):
+        ssid = self.config.get("wlan_ssid")
+        password = self.config.get("wlan_password")
+        mode = self.config.get("wlan_mode")
+        print(f'connect_to_wlan with loaded config: ssid: "{ssid}", password: "{password}",  mode: "{mode}"')
 
         if mode == "host":
-            print(f"Opening WLAN \"{ssid}\"")
+            print(f'Opening WLAN "{ssid}"')
             self.wlan = network.WLAN(network.AP_IF)
             self.wlan.config(essid=ssid, password=password)
             self.wlan.active(True)
             while self.wlan.active == False:
-                pass  # time.sleep(0.1)?
+                 time.sleep(0.5)
             print("Access point active")
             print(self.wlan.ifconfig())
         else:
-            print(f"Conecting to WLAN \"{ssid}\"")
+            print(f'Conecting to WLAN "{ssid}"')
             self.wlan = network.WLAN(network.STA_IF)
             self.wlan.active(True)
             while self.wlan.active == False:
-                pass  # time.sleep(0.1)?
-            # Fill in your network name (ssid) and password here:
+                time.sleep(0.5)
             self.wlan.connect(ssid, password)
             print(self.wlan.ifconfig())
+        
         max_connection_time = 10  # Maximum time to wait for connection in seconds
         connection_time = 0
         while not self.wlan.isconnected() and connection_time < max_connection_time:
@@ -146,7 +138,7 @@ class NetworkHandler():
 
     def request_current_time(self, time_zone):
         try:
-            print(f"request_current_time: time_zone: \"{time_zone}\"")
+            print(f'request_current_time: time_zone: "{time_zone}"')
             r = urequests.get(f"https://www.timeapi.io/api/Time/current/zone?timeZone={time_zone}")  # https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Berlin
             return r.json()
         except:

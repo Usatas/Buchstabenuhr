@@ -8,9 +8,6 @@ from RTCHandler import RTCHandler
 from BuchstabenuhrSquare import BuchstabenuhrSquare
 from LEDHandler import LEDHandler
 
-LEDPIN = 25
-AMOUNT_LEDS = 112 * 3  # (108 letter + 4 hearts) * 2 LEDs per letter and one (skipped) for space
-
 async def main():
     config_handler = Config()
     config_handler.load_config_from_file()
