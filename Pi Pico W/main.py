@@ -11,7 +11,8 @@ from LEDHandler import LEDHandler
 async def main():
     config_handler = Config()
     config_handler.load_config_from_file()
-    led_handler = LEDHandler()
+    rtc_handler = RTCHandler()
+    led_handler = LEDHandler(rtc_handler)
     led_handler.set_state(led_handler.STATE_WARNING)
     network_handler = NetworkHandler()
     is_connected = network_handler.connect_to_wlan()
@@ -21,7 +22,6 @@ async def main():
         time.sleep(10)
         is_connected = network_handler.connect_to_wlan()
         print(f"Connected to WLAN: {is_connected}")
-    rtc_handler = RTCHandler()
     uhr = BuchstabenuhrSquare(network_handler, rtc_handler, led_handler)
     try:
         print("Start main try")
