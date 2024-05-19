@@ -1,4 +1,5 @@
-import time
+import uasyncio as asyncio
+from ConfigHandler import Config
 
 # LED Addresses
 # Reihe 1: 0 - 21 (links nach rechts)
@@ -53,7 +54,7 @@ E_3_10 = [62, 63]
 L_3_11 = [64, 65]
 TEL_3 = T_3_9 + E_3_10 + L_3_11
 
-# Reihe 4: 66 - 87 (rechts nach links) # TODO Hier weiter die Buchstaben anpassen
+# Reihe 4: 66 - 87 (rechts nach links)
 V_4_1 = [86, 87] 
 O_4_2 = [84, 85] 
 R_4_3 = [82, 83] 
@@ -170,290 +171,79 @@ MINUTE_3 = [221]
 MINUTE_4 = [220]
 
 NUM_LEDS = 224
-MAX_BRIGHTNESS = 255/2 # 50% brightness
 
 class BuchstabenuhrSquare():
-    config = {}
-    default_config = {"wlan_ssid": "BuchstabenuhrSquare",
-                      "wlan_password": "BuchstabenuhrSquare",
-                      "wlan_mode": "host",
-                      "time_zone": "Europe/Berlin",
-                      "available_time_zones": ["Africa/Abidjan", "Africa/Accra", "Africa/Addis_Ababa", "Africa/Algiers",
-                                               "Africa/Asmara", "Africa/Asmera", "Africa/Bamako", "Africa/Bangui",
-                                               "Africa/Banjul", "Africa/Bissau", "Africa/Blantyre",
-                                               "Africa/Brazzaville", "Africa/Bujumbura", "Africa/Cairo",
-                                               "Africa/Casablanca", "Africa/Ceuta", "Africa/Conakry", "Africa/Dakar",
-                                               "Africa/Dar_es_Salaam", "Africa/Djibouti", "Africa/Douala",
-                                               "Africa/El_Aaiun", "Africa/Freetown", "Africa/Gaborone", "Africa/Harare",
-                                               "Africa/Johannesburg", "Africa/Juba", "Africa/Kampala",
-                                               "Africa/Khartoum", "Africa/Kigali", "Africa/Kinshasa", "Africa/Lagos",
-                                               "Africa/Libreville", "Africa/Lome", "Africa/Luanda", "Africa/Lubumbashi",
-                                               "Africa/Lusaka", "Africa/Malabo", "Africa/Maputo", "Africa/Maseru",
-                                               "Africa/Mbabane", "Africa/Mogadishu", "Africa/Monrovia",
-                                               "Africa/Nairobi", "Africa/Ndjamena", "Africa/Niamey",
-                                               "Africa/Nouakchott", "Africa/Ouagadougou", "Africa/Porto-Novo",
-                                               "Africa/Sao_Tome", "Africa/Timbuktu", "Africa/Tripoli", "Africa/Tunis",
-                                               "Africa/Windhoek", "America/Adak", "America/Anchorage",
-                                               "America/Anguilla", "America/Antigua", "America/Araguaina",
-                                               "America/Argentina/Buenos_Aires", "America/Argentina/Catamarca",
-                                               "America/Argentina/ComodRivadavia", "America/Argentina/Cordoba",
-                                               "America/Argentina/Jujuy", "America/Argentina/La_Rioja",
-                                               "America/Argentina/Mendoza", "America/Argentina/Rio_Gallegos",
-                                               "America/Argentina/Salta", "America/Argentina/San_Juan",
-                                               "America/Argentina/San_Luis", "America/Argentina/Tucuman",
-                                               "America/Argentina/Ushuaia", "America/Aruba", "America/Asuncion",
-                                               "America/Atikokan", "America/Atka", "America/Bahia",
-                                               "America/Bahia_Banderas", "America/Barbados", "America/Belem",
-                                               "America/Belize", "America/Blanc-Sablon", "America/Boa_Vista",
-                                               "America/Bogota", "America/Boise", "America/Buenos_Aires",
-                                               "America/Cambridge_Bay", "America/Campo_Grande", "America/Cancun",
-                                               "America/Caracas", "America/Catamarca", "America/Cayenne",
-                                               "America/Cayman", "America/Chicago", "America/Chihuahua",
-                                               "America/Coral_Harbour", "America/Cordoba", "America/Costa_Rica",
-                                               "America/Creston", "America/Cuiaba", "America/Curacao",
-                                               "America/Danmarkshavn", "America/Dawson", "America/Dawson_Creek",
-                                               "America/Denver", "America/Detroit", "America/Dominica",
-                                               "America/Edmonton", "America/Eirunepe", "America/El_Salvador",
-                                               "America/Ensenada", "America/Fort_Nelson", "America/Fort_Wayne",
-                                               "America/Fortaleza", "America/Glace_Bay", "America/Godthab",
-                                               "America/Goose_Bay", "America/Grand_Turk", "America/Grenada",
-                                               "America/Guadeloupe", "America/Guatemala", "America/Guayaquil",
-                                               "America/Guyana", "America/Halifax", "America/Havana",
-                                               "America/Hermosillo", "America/Indiana/Indianapolis",
-                                               "America/Indiana/Knox", "America/Indiana/Marengo",
-                                               "America/Indiana/Petersburg", "America/Indiana/Tell_City",
-                                               "America/Indiana/Vevay", "America/Indiana/Vincennes",
-                                               "America/Indiana/Winamac", "America/Indianapolis", "America/Inuvik",
-                                               "America/Iqaluit", "America/Jamaica", "America/Jujuy", "America/Juneau",
-                                               "America/Kentucky/Louisville", "America/Kentucky/Monticello",
-                                               "America/Knox_IN", "America/Kralendijk", "America/La_Paz",
-                                               "America/Lima", "America/Los_Angeles", "America/Louisville",
-                                               "America/Lower_Princes", "America/Maceio", "America/Managua",
-                                               "America/Manaus", "America/Marigot", "America/Martinique",
-                                               "America/Matamoros", "America/Mazatlan", "America/Mendoza",
-                                               "America/Menominee", "America/Merida", "America/Metlakatla",
-                                               "America/Mexico_City", "America/Miquelon", "America/Moncton",
-                                               "America/Monterrey", "America/Montevideo", "America/Montreal",
-                                               "America/Montserrat", "America/Nassau", "America/New_York",
-                                               "America/Nipigon", "America/Nome", "America/Noronha",
-                                               "America/North_Dakota/Beulah", "America/North_Dakota/Center",
-                                               "America/North_Dakota/New_Salem", "America/Nuuk", "America/Ojinaga",
-                                               "America/Panama", "America/Pangnirtung", "America/Paramaribo",
-                                               "America/Phoenix", "America/Port_of_Spain", "America/Port-au-Prince",
-                                               "America/Porto_Acre", "America/Porto_Velho", "America/Puerto_Rico",
-                                               "America/Punta_Arenas", "America/Rainy_River", "America/Rankin_Inlet",
-                                               "America/Recife", "America/Regina", "America/Resolute",
-                                               "America/Rio_Branco", "America/Rosario", "America/Santa_Isabel",
-                                               "America/Santarem", "America/Santiago", "America/Santo_Domingo",
-                                               "America/Sao_Paulo", "America/Scoresbysund", "America/Shiprock",
-                                               "America/Sitka", "America/St_Barthelemy", "America/St_Johns",
-                                               "America/St_Kitts", "America/St_Lucia", "America/St_Thomas",
-                                               "America/St_Vincent", "America/Swift_Current", "America/Tegucigalpa",
-                                               "America/Thule", "America/Thunder_Bay", "America/Tijuana",
-                                               "America/Toronto", "America/Tortola", "America/Vancouver",
-                                               "America/Virgin", "America/Whitehorse", "America/Winnipeg",
-                                               "America/Yakutat", "America/Yellowknife", "Antarctica/Casey",
-                                               "Antarctica/Davis", "Antarctica/DumontDUrville", "Antarctica/Macquarie",
-                                               "Antarctica/Mawson", "Antarctica/McMurdo", "Antarctica/Palmer",
-                                               "Antarctica/Rothera", "Antarctica/South_Pole", "Antarctica/Syowa",
-                                               "Antarctica/Troll", "Antarctica/Vostok", "Arctic/Longyearbyen",
-                                               "Asia/Aden", "Asia/Almaty", "Asia/Amman", "Asia/Anadyr", "Asia/Aqtau",
-                                               "Asia/Aqtobe", "Asia/Ashgabat", "Asia/Ashkhabad", "Asia/Atyrau",
-                                               "Asia/Baghdad", "Asia/Bahrain", "Asia/Baku", "Asia/Bangkok",
-                                               "Asia/Barnaul", "Asia/Beirut", "Asia/Bishkek", "Asia/Brunei",
-                                               "Asia/Calcutta", "Asia/Chita", "Asia/Choibalsan", "Asia/Chongqing",
-                                               "Asia/Chungking", "Asia/Colombo", "Asia/Dacca", "Asia/Damascus",
-                                               "Asia/Dhaka", "Asia/Dili", "Asia/Dubai", "Asia/Dushanbe",
-                                               "Asia/Famagusta", "Asia/Gaza", "Asia/Harbin", "Asia/Hebron",
-                                               "Asia/Ho_Chi_Minh", "Asia/Hong_Kong", "Asia/Hovd", "Asia/Irkutsk",
-                                               "Asia/Istanbul", "Asia/Jakarta", "Asia/Jayapura", "Asia/Jerusalem",
-                                               "Asia/Kabul", "Asia/Kamchatka", "Asia/Karachi", "Asia/Kashgar",
-                                               "Asia/Kathmandu", "Asia/Katmandu", "Asia/Khandyga", "Asia/Kolkata",
-                                               "Asia/Krasnoyarsk", "Asia/Kuala_Lumpur", "Asia/Kuching", "Asia/Kuwait",
-                                               "Asia/Macao", "Asia/Macau", "Asia/Magadan", "Asia/Makassar",
-                                               "Asia/Manila", "Asia/Muscat", "Asia/Nicosia", "Asia/Novokuznetsk",
-                                               "Asia/Novosibirsk", "Asia/Omsk", "Asia/Oral", "Asia/Phnom_Penh",
-                                               "Asia/Pontianak", "Asia/Pyongyang", "Asia/Qatar", "Asia/Qostanay",
-                                               "Asia/Qyzylorda", "Asia/Rangoon", "Asia/Riyadh", "Asia/Saigon",
-                                               "Asia/Sakhalin", "Asia/Samarkand", "Asia/Seoul", "Asia/Shanghai",
-                                               "Asia/Singapore", "Asia/Srednekolymsk", "Asia/Taipei", "Asia/Tashkent",
-                                               "Asia/Tbilisi", "Asia/Tehran", "Asia/Tel_Aviv", "Asia/Thimbu",
-                                               "Asia/Thimphu", "Asia/Tokyo", "Asia/Tomsk", "Asia/Ujung_Pandang",
-                                               "Asia/Ulaanbaatar", "Asia/Ulan_Bator", "Asia/Urumqi", "Asia/Ust-Nera",
-                                               "Asia/Vientiane", "Asia/Vladivostok", "Asia/Yakutsk", "Asia/Yangon",
-                                               "Asia/Yekaterinburg", "Asia/Yerevan", "Atlantic/Azores",
-                                               "Atlantic/Bermuda", "Atlantic/Canary", "Atlantic/Cape_Verde",
-                                               "Atlantic/Faeroe", "Atlantic/Faroe", "Atlantic/Jan_Mayen",
-                                               "Atlantic/Madeira", "Atlantic/Reykjavik", "Atlantic/South_Georgia",
-                                               "Atlantic/St_Helena", "Atlantic/Stanley", "Australia/ACT",
-                                               "Australia/Adelaide", "Australia/Brisbane", "Australia/Broken_Hill",
-                                               "Australia/Canberra", "Australia/Currie", "Australia/Darwin",
-                                               "Australia/Eucla", "Australia/Hobart", "Australia/LHI",
-                                               "Australia/Lindeman", "Australia/Lord_Howe", "Australia/Melbourne",
-                                               "Australia/North", "Australia/NSW", "Australia/Perth",
-                                               "Australia/Queensland", "Australia/South", "Australia/Sydney",
-                                               "Australia/Tasmania", "Australia/Victoria", "Australia/West",
-                                               "Australia/Yancowinna", "Brazil/Acre", "Brazil/DeNoronha", "Brazil/East",
-                                               "Brazil/West", "Canada/Atlantic", "Canada/Central", "Canada/Eastern",
-                                               "Canada/Mountain", "Canada/Newfoundland", "Canada/Pacific",
-                                               "Canada/Saskatchewan", "Canada/Yukon", "CET", "Chile/Continental",
-                                               "Chile/EasterIsland", "CST6CDT", "Cuba", "EET", "Egypt", "Eire", "EST",
-                                               "EST5EDT", "Etc/GMT", "Etc/GMT-0", "Etc/GMT-1", "Etc/GMT-10",
-                                               "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2",
-                                               "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7",
-                                               "Etc/GMT-8", "Etc/GMT-9", "Etc/GMT+0", "Etc/GMT+1", "Etc/GMT+10",
-                                               "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4",
-                                               "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9",
-                                               "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC",
-                                               "Etc/Zulu", "Europe/Amsterdam", "Europe/Andorra", "Europe/Astrakhan",
-                                               "Europe/Athens", "Europe/Belfast", "Europe/Belgrade", "Europe/Berlin",
-                                               "Europe/Bratislava", "Europe/Brussels", "Europe/Bucharest",
-                                               "Europe/Budapest", "Europe/Busingen", "Europe/Chisinau",
-                                               "Europe/Copenhagen", "Europe/Dublin", "Europe/Gibraltar",
-                                               "Europe/Guernsey", "Europe/Helsinki", "Europe/Isle_of_Man",
-                                               "Europe/Istanbul", "Europe/Jersey", "Europe/Kaliningrad", "Europe/Kiev",
-                                               "Europe/Kirov", "Europe/Kyiv", "Europe/Lisbon", "Europe/Ljubljana",
-                                               "Europe/London", "Europe/Luxembourg", "Europe/Madrid", "Europe/Malta",
-                                               "Europe/Mariehamn", "Europe/Minsk", "Europe/Monaco", "Europe/Moscow",
-                                               "Europe/Nicosia", "Europe/Oslo", "Europe/Paris", "Europe/Podgorica",
-                                               "Europe/Prague", "Europe/Riga", "Europe/Rome", "Europe/Samara",
-                                               "Europe/San_Marino", "Europe/Sarajevo", "Europe/Saratov",
-                                               "Europe/Simferopol", "Europe/Skopje", "Europe/Sofia", "Europe/Stockholm",
-                                               "Europe/Tallinn", "Europe/Tirane", "Europe/Tiraspol", "Europe/Ulyanovsk",
-                                               "Europe/Uzhgorod", "Europe/Vaduz", "Europe/Vatican", "Europe/Vienna",
-                                               "Europe/Vilnius", "Europe/Volgograd", "Europe/Warsaw", "Europe/Zagreb",
-                                               "Europe/Zaporozhye", "Europe/Zurich", "GB", "GB-Eire", "GMT", "GMT-0",
-                                               "GMT+0", "GMT0", "Greenwich", "Hongkong", "HST", "Iceland",
-                                               "Indian/Antananarivo", "Indian/Chagos", "Indian/Christmas",
-                                               "Indian/Cocos", "Indian/Comoro", "Indian/Kerguelen", "Indian/Mahe",
-                                               "Indian/Maldives", "Indian/Mauritius", "Indian/Mayotte",
-                                               "Indian/Reunion", "Iran", "Israel", "Jamaica", "Japan", "Kwajalein",
-                                               "Libya", "MET", "Mexico/BajaNorte", "Mexico/BajaSur", "Mexico/General",
-                                               "MST", "MST7MDT", "Navajo", "NZ", "NZ-CHAT", "Pacific/Apia",
-                                               "Pacific/Auckland", "Pacific/Bougainville", "Pacific/Chatham",
-                                               "Pacific/Chuuk", "Pacific/Easter", "Pacific/Efate", "Pacific/Enderbury",
-                                               "Pacific/Fakaofo", "Pacific/Fiji", "Pacific/Funafuti",
-                                               "Pacific/Galapagos", "Pacific/Gambier", "Pacific/Guadalcanal",
-                                               "Pacific/Guam", "Pacific/Honolulu", "Pacific/Johnston", "Pacific/Kanton",
-                                               "Pacific/Kiritimati", "Pacific/Kosrae", "Pacific/Kwajalein",
-                                               "Pacific/Majuro", "Pacific/Marquesas", "Pacific/Midway", "Pacific/Nauru",
-                                               "Pacific/Niue", "Pacific/Norfolk", "Pacific/Noumea", "Pacific/Pago_Pago",
-                                               "Pacific/Palau", "Pacific/Pitcairn", "Pacific/Pohnpei", "Pacific/Ponape",
-                                               "Pacific/Port_Moresby", "Pacific/Rarotonga", "Pacific/Saipan",
-                                               "Pacific/Samoa", "Pacific/Tahiti", "Pacific/Tarawa", "Pacific/Tongatapu",
-                                               "Pacific/Truk", "Pacific/Wake", "Pacific/Wallis", "Pacific/Yap",
-                                               "Poland", "Portugal", "PRC", "PST8PDT", "ROC", "ROK", "Singapore",
-                                               "Turkey", "UCT", "Universal", "US/Alaska", "US/Aleutian", "US/Arizona",
-                                               "US/Central", "US/East-Indiana", "US/Eastern", "US/Hawaii",
-                                               "US/Indiana-Starke", "US/Michigan", "US/Mountain", "US/Pacific",
-                                               "US/Samoa", "UTC", "W-SU", "WET", "Zulu"]
-                      }
-    time_zone = ""
 
-    def __init__(self, config_handler, network_handler, rtc_handler, led_handler):
-        print("Init Buchstabenuhr")
-        self.config_handler = config_handler
+    def __init__(self, network_handler, rtc_handler, led_handler):
+        print("Init Buchstabenuhr Square")
+        self.config = Config()
         self.network_handler = network_handler
         self.rtc_handler = rtc_handler
         self.led_handler = led_handler
-        self.led_handler.set_max_brightness(MAX_BRIGHTNESS)
         self.led_handler.set_num_leds(NUM_LEDS)
         self.led_handler.set_leds_disabled([])
 
-        self.config_handler.initialize_default_config(
-            self.default_config)  # TODO think about a better solution to prevent inconsistent default configs (maybe a class that holds the default config and the config handler just uses that)
-        self.config = self.config_handler.load_config_from_file()
-        self.apply_loaded_config()
-        self.show_start_up_animation()
-
-    def apply_loaded_config(self):
-        self.time_zone = self.config.get("time_zone", "Europe/Berlin")
-        self.available_time_zones = self.config.get("available_time_zones", ["Europe/Berlin"])
-        # self.config_handler.save_config(self.config) # save the loaded config just in case there are some new keys with default values
-
-    def set_config_to_default(self):
-        print("set config to default")
-        self.config_handler.set_config_to_default()
-        self.apply_loaded_config()
-        self.network_handler.apply_loaded_config()
+        self.time_zone = self.config.get("time_zone")
+        self.available_time_zones = self.config.get("available_time_zones")
+        # self.show_start_up_animation()
 
     def show_start_up_animation(self):
-        print("show_start_up_animation")
         # TODO show start up animation
+        print("show_start_up_animation")
 
-    def run(self):
+    async def run(self):
         print("run BuchstabenuhrSquare")
         # If no network configurated or unable to connect => host WLAN Buchstabenuhr
         # runtime as initial time ...
-        min = 00
-        hour = 00
+        minute = 0
+        hour = 0
         error_leds = []
         just_updated = True  # to prevent reloading time every 10s
         while True:
             # Reload time every 12h
-            if min == 0 and hour % 12 == 0 and just_updated == False:
+            if minute == 0 and hour % 12 == 0 and just_updated == False:
                 time_json = self.network_handler.request_current_time(self.time_zone)
                 temp_min = time_json.get("min", -1)
                 temp_hour = time_json.get("hour", -1)
-                # TODO Error if loading time failed => maybe set a C as indicator
 
                 if temp_min < 0 or temp_hour < 0:
                     error_leds += K_1_3
                 else:
                     # todo update RTC
-                    min = temp_min
+                    minute = temp_min
                     hour = temp_hour
                     just_updated = True
 
-            if min == 5 and just_updated:
+            if minute == 5 and just_updated:
                 just_updated = False
 
             # Get time from RTC
-            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime(0)
+            (second, minute, hour) = self.rtc_handler.DS3231_ReadTime()
             print("Time: " + str(hour) + ":" + str(minute) + ":" + str(second))
             on_leds = self.interpret_time_to_led(minute, hour)
             # Show LEDs
-            # self.led_handler.pixels_fill_and_show_expert_mode(on_leds, self.led_handler.RED, self.led_handler.GREEN, 1, 0.1)
             self.led_handler.pixels_fill_and_show(on_leds)
-            time.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
-
-    def setup__wlan_config_web_server(self):
-        html = """<!DOCTYPE html>
-    <html>
-    <head><title>Wi-Fi Setup</title></head>
-    <body>
-    <h1>Wi-Fi Setup</h1>
-    <form action="/save" method="post">
-        <label for="ssid">Wi-Fi SSID:</label>
-        <input type="text" id="ssid" name="ssid" required><br>
-        <label for="password">Wi-Fi Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Save and Connect">
-    </form>
-    </body>
-    </html>
-    """
+            await asyncio.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
-        print (f"interpret_time_to_led: {hour}:{min}")
-        
         if min < 0 or hour < 0:
             return False
 
         on_leds = ES_1 + IST_1
 
         min_dict = {
-            range(0, 10): FUENF_1 + NACH_4,
-            range(10, 15): ZEHN_2 + NACH_4,
-            range(15, 20): VIER_3 + TEL_3 + NACH_4,
-            range(20, 25): ZWANZIG_2 + NACH_4,
-            range(25, 30): FUENF_1 + VOR_4 + HALB_5,
-            range(30, 35): HALB_5,
-            range(35, 40): FUENF_1 + NACH_4 + HALB_5,
-            range(40, 45): ZWANZIG_2 + VOR_4,
-            range(45, 50): VIER_3 + TEL_3 + VOR_4,
-            range(50, 55): ZEHN_2 + VOR_4,
-            range(55, 60): FUENF_1 + VOR_4
+            tuple(range(0, 5)): UHR_10,
+            tuple(range(5, 10)): FUENF_1 + NACH_4,
+            tuple(range(10, 15)): ZEHN_2 + NACH_4,
+            tuple(range(15, 20)): VIER_3 + TEL_3 + NACH_4,
+            tuple(range(20, 25)): ZWANZIG_2 + NACH_4,
+            tuple(range(25, 30)): FUENF_1 + VOR_4 + HALB_5,
+            tuple(range(30, 35)): HALB_5,
+            tuple(range(35, 40)): FUENF_1 + NACH_4 + HALB_5,
+            tuple(range(40, 45)): ZWANZIG_2 + VOR_4,
+            tuple(range(45, 50)): VIER_3 + TEL_3 + VOR_4,
+            tuple(range(50, 55)): ZEHN_2 + VOR_4,
+            tuple(range(55, 60)): FUENF_1 + VOR_4
         }
 
         on_leds += next(min_dict[key] for key in min_dict if min in key)
@@ -465,6 +255,7 @@ class BuchstabenuhrSquare():
         hour = hour % 12 if hour > 12 else hour
 
         hour_dict = {
+            0: ZWOELF_9,
             1: EIN_6 + (S_6_4 if min >= 5 else []),
             2: ZWEI_6,
             3: DREI_7,

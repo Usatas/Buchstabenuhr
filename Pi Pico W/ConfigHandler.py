@@ -1,32 +1,50 @@
 import json
 
+# class has to be a different name as file for singleton pattern
+class Config():
 
-class ConfigHandler():
+    _instance = None
+    _default_config = {"wlan_ssid": "Buchstabenuhr",
+                      "wlan_password": "Buchstabenuhr",
+                      "wlan_mode": "client",
+                      "time_zone": "Europe/Berlin",
+                      "max_brightness": 255/2,
+                      "foreground_brightness": 0.5,
+                      "background_brightness": 0.01,
+                      "foreground_color": [255, 255, 255],
+                      "background_color": [255, 255, 255],
+                      "available_time_zones": ["Europe/Berlin"]
+                      }
+    time_zone = ""
 
-    def __init__(self, filePath):
-        print("ConfigHandler init")
-        self.filePath = filePath
-        self.config = {}
-        self.default_config = {}
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Config, cls).__new__(cls)
+            cls._instance.config = {}
+            cls._instance.default_config = cls._default_config
+        return cls._instance
+    
+    def set(self, key, value):
+        self.config[key] = value
 
-    def initialize_default_config(self, default_config):
-        self.default_config = default_config
+
+    def get(self, key):
+        return self.config.get(key) or self.default_config.get(key)
+    
+    def get_config(self):
+        return self.config
 
     def set_config_to_default(self):
         print("set config to default")
         self.config = self.default_config
-        self.save_config(self.config)
+        self.save_config()
 
-    def save_config(self, config):
+    def save_config(self):
         print("save the config file to flash")
         with open("config.json", "w") as configFile:
-            json.dump(config, configFile)
+            json.dump(self.config, configFile)
 
-    def load_config_from_file(self, filePath=None):
-        # init config
-        if filePath is None:
-            filePath = self.filePath
-
+    def load_config_from_file(self):
         self.config = {}
         try:
             print("load the config file from flash")
