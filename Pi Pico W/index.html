@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <title>WordClock Dashboard v0.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -31,7 +31,7 @@
             --box-shadow: 0 2rem 3rem var(--color-light);
         }
 
-        .dark-mode-variables{
+        .darkModeVariables{
             --color-background: #181a1e;
             --color-white: #202528;
             --color-dark: #edeffd;
@@ -120,7 +120,7 @@
             display: none;
         }
 
-        .text-muted{
+        .textMuted{
             color: var(--color-info-dark);
         }
 
@@ -187,7 +187,7 @@
             border-radius: 50%;
         }
 
-        #base_color, #word_color, #night_mode_base_color, #night_mode_word_color {
+        #baseColor, #wordColor, #nightModeBaseColor, #nightModeWordColor {
             position: relative;
             border: 2px solid;
             border-radius: 25px;
@@ -197,7 +197,7 @@
             overflow: hidden;
         }
 
-        #base_color > input, #word_color > input, #night_mode_base_color > input, #night_mode_word_color > input {
+        #baseColor > input, #wordColor > input, #nightModeBaseColor > input, #nightModeWordColor > input {
             position: absolute;
             height: calc(100% + 8px);
             width: 100%;
@@ -237,11 +237,11 @@
             background:  var(--color-dark);
         } 
 
-        .text-input {
+        .textInput {
             position: relative;
         }
 
-        .text-input input {
+        .textInput input {
             background: 0;
             border: 0;
             outline: none;
@@ -251,11 +251,11 @@
             transition: padding 0.3s 0.2s ease;
         }
         
-        .text-input input:focus + .line:after {
+        .textInput input:focus + .line:after {
                 transform: scaleX(1);
         }
 
-        .text-input .line {
+        .textInput .line {
             width: 100%;
             height: 2px;
             position: absolute;
@@ -263,7 +263,7 @@
             background: #bdc3c7;
         }
 
-        .text-input .line:after {
+        .textInput .line:after {
             content: " ";
             position: absolute;
             float: right;
@@ -274,21 +274,21 @@
             background: var(--color-primary);
         }
 
-        .right-section{
+        .rightSection{
             margin-top: 1.4rem;
         }
 
-        .right-section .nav{
+        .rightSection .nav{
             display: flex;
             justify-content: end;
             gap: 2rem;
         }
 
-        .right-section .nav button{
+        .rightSection .nav button{
             display: none;
         }
 
-        .right-section .dark-mode, .night-mode{
+        .rightSection .darkMode, .nightMode{
             background-color: var(--color-light);
             display: flex;
             justify-content: space-between;
@@ -299,7 +299,7 @@
             border-radius: var(--border-radius-1);
         }
 
-        .right-section .dark-mode span, .night-mode span{
+        .rightSection .darkMode span, .nightMode span{
             font-size: 1.2rem;
             width: 50%;
             height: 100%;
@@ -308,26 +308,26 @@
             justify-content: center;
         }
 
-        .right-section .dark-mode span.active, .night-mode span.active{
+        .rightSection .darkMode span.active, .nightMode span.active{
             background-color: var(--color-primary);
             color: white;
             border-radius: var(--border-radius-1);
         }
 
-        .right-section .nav .profile{
+        .rightSection .nav .profile{
             display: flex;
             gap: 2rem;
             text-align: right;
         }
 
-        .right-section .nav .profile .profile-photo{
+        .rightSection .nav .profile .profilePhoto{
             width: 2.8rem;
             height: 2.8rem;
             border-radius: 50%;
             overflow: hidden;
         }
 
-        .right-section .user-profile{
+        .rightSection .user-profile{
             display: flex;
             justify-content: center;
             text-align: center;
@@ -339,22 +339,22 @@
             margin: 1rem 0 50px 0;
         }
 
-        .right-section .user-profile:hover, .right-section .save-button:hover{
+        .rightSection .user-profile:hover, .rightSection .saveButton:hover{
             box-shadow: var(--box-shadow);
         }
 
-        .right-section .user-profile img{
+        .rightSection .user-profile img{
             width: 11rem;
             height: auto;
             margin-bottom: 0.8rem;
             border-radius: 50%;
         }
 
-        .right-section .user-profile h2{
+        .rightSection .user-profile h2{
             margin-bottom: 0.2rem;
         }
 
-        .right-section .save-button {
+        .rightSection .saveButton {
             display: flex;
             justify-content: center;
             text-align: center;
@@ -366,31 +366,31 @@
             font-weight: 800;
         }
 
-        .right-section .save-button:active {
+        .rightSection .saveButton:active {
             background: var(--color-dark);
             color: var(--color-white);
             box-shadow: none;
         }
 
-        .right-section .reminders{
+        .rightSection .reminders{
             margin-top: 2rem;
         }
 
-        .right-section .reminders .header{
+        .rightSection .reminders .header{
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 0.8rem;
         }
 
-        .right-section .reminders .header span{
+        .rightSection .reminders .header span{
             padding: 10px;
             box-shadow: var(--box-shadow);
             background-color: var(--color-white);
             border-radius: 50%;
         }
 
-        .right-section .reminders .notification{
+        .rightSection .reminders .notification{
             background-color: var(--color-white);
             display: flex;
             align-items: center;
@@ -403,11 +403,11 @@
             transition: all 0.3s ease;
         }
 
-        .right-section .reminders .notification:hover{
+        .rightSection .reminders .notification:hover{
             box-shadow: none;
         }
 
-        .right-section .reminders .notification .content{
+        .rightSection .reminders .notification .content{
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -415,7 +415,7 @@
             width: 100%;
         }
 
-        .right-section .reminders .notification .icon{
+        .rightSection .reminders .notification .icon{
             padding: 0.6rem;
             color: var(--color-white);
             background-color: var(--color-success);
@@ -423,11 +423,11 @@
             display: flex;
         }
 
-        .right-section .reminders .notification.deactive .icon{
+        .rightSection .reminders .notification.deactive .icon{
             background-color: var(--color-danger);
         }
 
-        .right-section .reminders .add-reminder{
+        .rightSection .reminders .addReminder{
             background-color: var(--color-white);
             border: 2px dashed var(--color-primary);
             color: var(--color-primary);
@@ -437,12 +437,12 @@
             cursor: pointer;
         }
 
-        .right-section .reminders .add-reminder:hover{
+        .rightSection .reminders .addReminder:hover{
             background-color: var(--color-primary);
             color: white;
         }
 
-        .right-section .reminders .add-reminder div{
+        .rightSection .reminders .addReminder div{
             display: flex;
             align-items: center;
             gap: 0.6rem;
@@ -479,12 +479,12 @@
                 margin: 0;
             }
 
-            .right-section {
+            .rightSection {
                 width: 94%;
                 margin: 0 auto 4rem;
             }
 
-            .right-section .nav{
+            .rightSection .nav{
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -496,7 +496,7 @@
                 margin: 0;
             }
 
-            .right-section .nav .dark-mode{
+            .rightSection .nav .darkMode{
                 width: 4.4rem;
                 position: absolute;
                 left: 66%;
@@ -520,7 +520,7 @@
                             <h3>Grundfarbe</h3>
                             <h1>Grundfarbe</h1>
                         </div>
-                        <div class="colorpicker" id="base_color">
+                        <div class="colorpicker" id="baseColor">
                             <input type="color" value="#ffffff"/>
                         </div>
                     </div>
@@ -531,7 +531,7 @@
                             <h3>Wortfarbe</h3>
                             <h1>Wortfarbe</h1>
                         </div>
-                        <div class="colorpicker" id="word_color">
+                        <div class="colorpicker" id="wordColor">
                             <input type="color" value="#ffffff"/>
                         </div>
                     </div>
@@ -607,7 +607,7 @@
                             <h3>SSID</h3>
                             <h1>SSID</h1>
                         </div>
-                        <div class="text-input">
+                        <div class="textInput">
                             <input id="ssid" type="text" placeholder="Was ist dein WLAN-Name?"/>
                             <div class="line"></div>
                         </div>
@@ -619,7 +619,7 @@
                             <h3>Passwort</h3>
                             <h1>Passwort</h1>
                         </div>
-                        <div class="text-input">
+                        <div class="textInput">
                             <input id="password" type="password"/>
                             <div class="line"></div>
                         </div>
@@ -629,16 +629,16 @@
             <!-- End of Time and Zone -->
             
             <h1>Nachtmodus aktivieren?</h1>
-            <div class="night-mode">
-                <span class="material-icons-sharp active">
-                    light_mode
+            <div class="nightMode">
+                <span class="material-symbols-outlined active">
+                    check
                 </span>
-                <span class="material-icons-sharp">
-                    dark_mode
+                <span class="material-symbols-outlined">
+                    close
                 </span>
             </div>
 
-            <div id="night-mode-toggle">
+            <div id="nightModeToggle">
                 <h1>Nachtmodus: Uhrzeit</h1>
                 <!-- Time and Zone -->
                 <div class="time section">
@@ -649,7 +649,7 @@
                                 <h1>Start-Uhrzeit</h1>
                             </div>
                             <div>
-                                <input id="night_mode_start_time" type="time">
+                                <input id="nightModeStartTime" type="time">
                             </div>
                         </div>
                     </div>
@@ -660,7 +660,7 @@
                                 <h1>End-Uhrzeit</h1>
                             </div>
                             <div>
-                                <input id="night_mode_end_time" type="time">
+                                <input id="nightModeEndTime" type="time">
                             </div>
                         </div>
                     </div>
@@ -676,7 +676,7 @@
                                 <h3>Grundfarbe</h3>
                                 <h1>Grundfarbe</h1>
                             </div>
-                            <div class="colorpicker" id="night_mode_base_color">
+                            <div class="colorpicker" id="nightModeBaseColor">
                                 <input type="color" value="#ffffff"/>
                             </div>
                         </div>
@@ -687,7 +687,7 @@
                                 <h3>Wortfarbe</h3>
                                 <h1>Wortfarbe</h1>
                             </div>
-                            <div class="colorpicker" id="night_mode_word_color">
+                            <div class="colorpicker" id="nightModeWordColor">
                                 <input type="color" value="#ffffff"/>
                             </div>
                         </div>
@@ -703,11 +703,11 @@
                             <div>
                                 <h3>Grundhelligkeit</h3>
                                 <div class="rangeValue">
-                                    <p id="night_mode_baseLuminationRangeValue">50</p>
+                                    <p id="nightModeBaseLuminationRangeValue">50</p>
                                 </div>
                             </div>
                             <div class="slider">
-                                <input id="night_mode_baseLumination" type="range" min="0" max="100" value="50" oninput="night_mode_baseLuminationRangeValue.innerText = this.value">
+                                <input id="nightModeBaseLumination" type="range" min="0" max="100" value="50" oninput="nightModeBaseLuminationRangeValue.innerText = this.value">
                             </div> 
                         </div>
                     </div>
@@ -716,12 +716,12 @@
                             <div>
                                 <h3>Worthelligkeit</h3>
                                 <div class="rangeValue">
-                                    <p id="night_mode_wordLuminationRangeValue">50</p>
+                                    <p id="nightModeWordLuminationRangeValue">50</p>
                                 </div>
                             </div>
     
                             <div class="slider">
-                                <input id="night_mode_wordLumination" type="range" min="0" max="100" value="50" oninput="night_mode_wordLuminationRangeValue.innerText = this.value">   
+                                <input id="nightModeWordLumination" type="range" min="0" max="100" value="50" oninput="nightModeWordLuminationRangeValue.innerText = this.value">   
                             </div> 
                         </div>
                     </div>
@@ -733,13 +733,13 @@
         <!-- End of Main Content -->
 
         <!-- Right Section -->
-        <div class="right-section">
+        <div class="rightSection">
             <div class="nav">
-                <div class="dark-mode">
-                    <span class="material-icons-sharp active">
+                <div class="darkMode">
+                    <span class="material-symbols-outlined active">
                         light_mode
                     </span>
-                    <span class="material-icons-sharp">
+                    <span class="material-symbols-outlined">
                         dark_mode
                     </span>
                 </div>
@@ -747,9 +747,9 @@
                 <div class="profile">
                     <div class="info">
                         <p>Hey, <b>Anna</b></p>
-                        <small class="text-muted">Admin</small>
+                        <small class="textMuted">Admin</small>
                     </div>
-                    <div class="profile-photo">
+                    <div class="profilePhoto">
                        <!--<img src="images/profile-1.jpg">-->
                     </div>
                 </div>
@@ -764,26 +764,25 @@
                 </div>
             </div>
             
-            <div class="save-button">
+            <div class="saveButton">
                 Speichern
             </div>
         </div>
     </div>
 
     <script>
-        const darkMode = document.querySelector('.dark-mode');
+        const darkMode = document.querySelector('.darkMode');
 
         darkMode.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode-variables');
+            document.body.classList.toggle('darkModeVariables');
             darkMode.querySelector('span:nth-child(1)').classList.toggle('active');
             darkMode.querySelector('span:nth-child(2)').classList.toggle('active');
         })
 
-        const nightMode = document.querySelector('.night-mode');
-        const nightModeDiv = document.querySelector('#night-mode-toggle')
+        const nightMode = document.querySelector('.nightMode');
+        const nightModeDiv = document.querySelector('#nightModeToggle')
 
         nightMode.addEventListener('click', () => {
-            console.log('We here')
             nightMode.classList.toggle('active');
             nightModeDiv.classList.toggle('hidden');
             nightMode.querySelector('span:nth-child(1)').classList.toggle('active');
@@ -791,29 +790,29 @@
             
         })
 
-        const baseColorDiv = document.querySelector('#base_color');
-        const baseColorInput = document.querySelector('#base_color > input');
-        const saveButton = document.querySelector('.save-button');
+        const baseColorDiv = document.querySelector('#baseColor');
+        const baseColorInput = document.querySelector('#baseColor > input');
+        const saveButton = document.querySelector('.saveButton');
 
-        const wordColorDiv = document.querySelector('#word_color');
-        const wordColorInput = document.querySelector('#word_color > input');
+        const wordColorDiv = document.querySelector('#wordColor');
+        const wordColorInput = document.querySelector('#wordColor > input');
 
         const baseLuminationInput = document.querySelector('#baseLumination');
         const wordLuminationInput = document.querySelector('#wordLumination');
 
-        const nightModeBaseColorDiv = document.querySelector('#night_mode_base_color');
-        const nightModeBaseColorInput = document.querySelector('#night_mode_base_color > input');
+        const nightModeBaseColorDiv = document.querySelector('#nightModeBaseColor');
+        const nightModeBaseColorInput = document.querySelector('#nightModeBaseColor > input');
 
-        const nightModeWordColorDiv = document.querySelector('#night_mode_word_color');
-        const nightModeWordColorInput = document.querySelector('#night_mode_word_color > input');
+        const nightModeWordColorDiv = document.querySelector('#nightModeWordColor');
+        const nightModeWordColorInput = document.querySelector('#nightModeWordColor > input');
 
-        const nightModeBaseLuminationInput = document.querySelector('#night_mode_baseLumination');
-        const nightModeWordLuminationInput = document.querySelector('#night_mode_wordLumination');
+        const nightModeBaseLuminationInput = document.querySelector('#nightModeBaseLumination');
+        const nightModeWordLuminationInput = document.querySelector('#nightModeWordLumination');
 
 
         const timeInput = document.querySelector('#time');
-        const nightModeStartTimeInput = document.querySelector('#night_mode_start_time');
-        const nightModeEndTimeInput = document.querySelector('#night_mode_end_time');
+        const nightModeStartTimeInput = document.querySelector('#nightModeStartTime');
+        const nightModeEndTimeInput = document.querySelector('#nightModeEndTime');
         const ssidInput = document.querySelector('#ssid');
         const passwordInput = document.querySelector('#password');
 
