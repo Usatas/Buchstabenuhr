@@ -227,7 +227,7 @@ class Buchstabenuhr():
             on_leds = self.interpret_time_to_led(minute, hour)
             # Show LEDs
             self.led_handler.pixels_fill_and_show(on_leds)
-            await asyncio.sleep(1)  # sleep for 10s => Time scale is min so... this is fine
+            await asyncio.sleep(10)  # sleep for 10s => Time scale is min so... this is fine
 
     def interpret_time_to_led(self, min, hour):
         min = int(min)

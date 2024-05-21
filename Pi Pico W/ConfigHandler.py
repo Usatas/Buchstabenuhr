@@ -10,9 +10,16 @@ class Config():
                       "time_zone": "Europe/Berlin",
                       "max_brightness": 255/2,
                       "foreground_brightness": 0.5,
-                      "background_brightness": 0.01,
+                      "background_brightness": 0.0,
                       "foreground_color": [255, 255, 255],
                       "background_color": [255, 255, 255],
+                      "night_mode": True,
+                      "night_mode_start_time": {'hour': 22, 'minute': 00},
+                      "night_mode_end_time": {'hour': 7, 'minute': 00},
+                      "night_mode_foreground_brightness": 0.0,
+                      "night_mode_background_brightness": 0.0,
+                      "night_mode_foreground_color": [255, 255, 255],
+                      "night_mode_background_color": [255, 255, 255],
                       "available_time_zones": ["Europe/Berlin"]
                       }
     time_zone = ""

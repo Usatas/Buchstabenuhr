@@ -23,13 +23,25 @@ class LEDHandler():
     STATE_WARNING = 1
     STATE_SUCCESS = 2
 
-    def __init__(self):
+    def __init__(self, rtc_handler):
         print("LEDHandler init")
         self.config = Config()
-        
+        self.rtc_handler = rtc_handler
         self.neo_di = machine.Pin(28)
         self.leds = neopixel.NeoPixel(self.neo_di, self.NUM_LEDS)
+
+    def is_current_time_in_night_mode(self):
+        start_total_minutes = self.config.get("night_mode_start_time")['hour'] * 60 + self.config.get("night_mode_start_time")['minute']
+        end_total_minutes = self.config.get("night_mode_end_time")['hour'] * 60 + self.config.get("night_mode_end_time")['minute']
+        (_, minute, hour) = self.rtc_handler.DS3231_ReadTime()
+        check_total_minutes = hour * 60 + minute
         
+        if start_total_minutes < end_total_minutes:
+            # Range does not span midnight
+            return start_total_minutes <= check_total_minutes <= end_total_minutes
+        else:
+            # Range spans midnight
+            return check_total_minutes >= start_total_minutes or check_total_minutes <= end_total_minutes
     
     def set_num_leds(self, num_leds):
         self.NUM_LEDS = num_leds
@@ -47,11 +59,16 @@ class LEDHandler():
                 self.pixels_set(i, tuple(foreground_color))
             else:
                 self.pixels_set(i, tuple(background_color))
-
+    
     # prefered method
     def pixels_fill_and_show(self, on_leds):
-        self.pixels_fill_and_show_expert_mode(on_leds, self.config.get("foreground_color"), self.config.get("background_color"), 
-                                              self.config.get("foreground_brightness"), self.config.get("background_brightness"))
+
+        if self.config.get("night_mode") and self.is_current_time_in_night_mode():
+            self.pixels_fill_and_show_expert_mode(on_leds, self.config.get("night_mode_foreground_color"), self.config.get("night_mode_background_color"), 
+                                                  self.config.get("night_mode_foreground_brightness"), self.config.get("night_mode_background_brightness"))
+        else:    
+            self.pixels_fill_and_show_expert_mode(on_leds, self.config.get("foreground_color"), self.config.get("background_color"), 
+                                                  self.config.get("foreground_brightness"), self.config.get("background_brightness"))
 
 
     def pixels_fill_and_show_expert_mode(self, on_leds, foreground_color, background_color, foreground_brightness, background_brightness):
