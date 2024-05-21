@@ -131,7 +131,7 @@ class NetworkHandler():
         ssid = self.config.get("wlan_ssid")
         password = self.config.get("wlan_password")
         mode = self.config.get("wlan_mode")
-        print(f'connect_to_wlan with loaded config: ssid: "{ssid}", password: "{password}",  mode: "{mode}"')
+        print(f'connect_to_wlan with loaded config: ssid: "{ssid}", mode: "{mode}"')
 
         if mode == "host":
             print(f'Opening WLAN "{ssid}"')
