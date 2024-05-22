@@ -629,7 +629,7 @@
             <!-- End of Time and Zone -->
             
             <h1>Nachtmodus aktivieren?</h1>
-            <div class="nightMode">
+            <div class="nightMode active">
                 <span class="material-symbols-outlined active">
                     check
                 </span>
@@ -816,8 +816,6 @@
         const ssidInput = document.querySelector('#ssid');
         const passwordInput = document.querySelector('#password');
 
-
-
         baseColorInput.addEventListener('input', () => {
             baseColorDiv.style.backgroundColor = baseColorInput.value;
         });
@@ -835,6 +833,53 @@
         nightModeWordColorInput.addEventListener('input', () => {
             nightModeWordColorDiv.style.backgroundColor = nightModeWordColorInput.value;
         });
+
+        const configRequest = new XMLHttpRequest();
+        configRequest.open('GET', '/config');
+        configRequest.send();
+        configRequest.onload = () => {
+            if (configRequest.status != 200) {
+                console.log(`Error ${configRequest.status}: ${configRequest.statusText}`);
+                return
+            }
+            const r = JSON.parse(configRequest.response)
+            baseColorInput.value = rgbToHex(r.background_color);
+            baseColorDiv.style.backgroundColor = rgbToHex(r.background_color);
+            wordColorInput.value = rgbToHex(r.foreground_color);
+            wordColorDiv.style.backgroundColor = rgbToHex(r.foreground_color);
+            baseLuminationInput.value = r.background_brightness * 100;
+            baseLuminationRangeValue.innerText = r.background_brightness * 100;
+            wordLuminationInput.value = r.foreground_brightness * 100;
+            wordLuminationRangeValue.innerText = r.foreground_brightness * 100;
+            ssidInput.value = r.wlan_ssid;
+            if (r.night_mode) {
+                nightMode.classList.add('active')
+                nightModeDiv.classList.remove('hidden');
+                nightMode.querySelector('span:nth-child(1)').classList.add('active');
+                nightMode.querySelector('span:nth-child(2)').classList.remove('active');
+            } else {
+                nightMode.classList.remove('active')
+                nightModeDiv.classList.add('hidden');
+                nightMode.querySelector('span:nth-child(1)').classList.remove('active');
+                nightMode.querySelector('span:nth-child(2)').classList.add('active');
+            }
+            nightModeBaseColorInput.value = rgbToHex(r.night_mode_background_color);
+            nightModeBaseColorDiv.style.backgroundColor = rgbToHex(r.night_mode_background_color);
+            nightModeWordColorInput.value = rgbToHex(r.night_mode_foreground_color);
+            nightModeWordColorDiv.style.backgroundColor = rgbToHex(r.night_mode_foreground_color);
+            nightModeBaseLuminationInput.value = r.night_mode_background_brightness * 100;
+            nightModeBaseLuminationRangeValue.innerText = r.night_mode_background_brightness * 100;
+            nightModeWordLuminationInput.value = r.night_mode_foreground_brightness * 100;
+            nightModeWordLuminationRangeValue.innerText = r.night_mode_foreground_brightness * 100;
+            console.log(nightModeStartTimeInput)
+
+            nightModeStartTimeInput.value = `${valueToTimeString(r.night_mode_start_time.hour)}:${valueToTimeString(r.night_mode_start_time.minute)}`;
+            nightModeEndTimeInput.value = `${valueToTimeString(r.night_mode_end_time.hour)}:${valueToTimeString(r.night_mode_end_time.minute)}`;
+        };
+
+        configRequest.onerror = () => {
+            console.log("Request failed");
+        };
 
         saveButton.addEventListener('click', () => {    
 
@@ -856,7 +901,7 @@
                 night_mode_end_time: nightModeEndTimeInput.value
             })
 
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open("POST", '/save', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
@@ -877,6 +922,20 @@
                 night_mode_end_time: nightModeEndTimeInput.value
             }));
         });
+
+        function valueToTimeString(v) {
+            const string = v.toString();
+            return string.length == 1 ? "0" + string : string;
+        }
+
+        function valueToHex(c) {
+            const hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+
+        function rgbToHex(rgb_array) {
+            return "#" + valueToHex(rgb_array[0]) + valueToHex(rgb_array[1]) + valueToHex(rgb_array[2])
+        }
     </script>
 </body>
 
